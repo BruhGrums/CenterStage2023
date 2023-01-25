@@ -377,11 +377,15 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     // Takes a boolean grip value and does the math to convert it to a servo position
     public void setGrip(boolean grip) {
-        double gripPower = grip ? 0 : 1;
-        double leftPos = ((-1 * gripPower + 1) / 3) + 150.0/270;
-        double rightPos = (gripPower * (185.0 / 270)) + 2.0/3;
+        double leftOpen = 0.0, leftClosed = 105.0;
+        double rightOpen = 270.0, rightClosed = 175.0;
 
-        leftGripServo.setPosition(leftPos);
-        rightGripServo.setPosition(rightPos);
+        if (grip) {
+            leftGripServo.setPosition(leftClosed / 270);
+            rightGripServo.setPosition(rightClosed / 270);
+        } else if (!grip) {
+            leftGripServo.setPosition(leftOpen / 270);
+            rightGripServo.setPosition(rightOpen / 270);
+        }
     }
 }

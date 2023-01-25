@@ -93,6 +93,6 @@ public class NewManualOp extends OpMode {
         final boolean gripPower = grip;
 
         robot.setSlideMotors(slideLeft, slideRight, slideTop);
-        robot.setGrip(gripPower, gripperStowed);
+        robot.setGrip(gripPower);
     }
 }

@@ -202,17 +202,16 @@ public class Robot {
 
     // gripPower takes the position of the gripper from 0 to 1 (0 is open, 1 is closed)
     // The stowed variable pulls the grippers further back than normal operation, needs to be calibrated better
-    public void setGrip(boolean grip, boolean stowed) {
-        double gripPower = grip ? 0 : 1;
-        double leftPos = ((-1 * gripPower + 1) / 3) + 150.0/270;
-        double rightPos = (gripPower * (185.0 / 270)) + 2.0/3;
+    public void setGrip(boolean grip) {
+        double leftOpen = 0.0, leftClosed = 105.0;
+        double rightOpen = 270.0, rightClosed = 175.0;
 
-        if (stowed) {
-            leftGripServo.setPosition(8.0/9);
-            rightGripServo.setPosition(.5);
-        } else {
-            leftGripServo.setPosition(leftPos);
-            rightGripServo.setPosition(rightPos);
+        if (grip) {
+            leftGripServo.setPosition(leftClosed / 270);
+            rightGripServo.setPosition(rightClosed / 270);
+        } else if (!grip) {
+            leftGripServo.setPosition(leftOpen / 270);
+            rightGripServo.setPosition(rightOpen / 270);
         }
     }
 }
