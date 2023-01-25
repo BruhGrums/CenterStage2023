@@ -1,0 +1,6 @@
+I didn't include the simulator's binary here since it was over the 100MB file limit for Github
+Instead, here's the link to the tutorial:
+https://deltacv.gitbook.io/eocv-sim/introduction/opencv-and-easyopencv
+
+I just put the binary right here in this folder to simplify things, but it's up to you as long as it
+doesn't cause problems
