@@ -22,8 +22,6 @@ public class HeadlessOp extends OpMode {
 
     // Set up some useful variables
     private boolean headlessMode = false;   // Allows us to toggle headless mode on and off
-    private int gyroCalibratedCount = 0;    // I don't know what this actually does
-    private boolean gripperStowed = false;  // Allows use to stow and unstow the gripper
     private boolean grip = false;                // Controls how far open or closed the gripper is
     private double multiplier = 0.8;       // Allows us to slow down the motor speed
 
@@ -50,9 +48,9 @@ public class HeadlessOp extends OpMode {
             headlessMode = ! headlessMode;
         }
 
-        // Stow/unstow gripper when cross is pressed on arm driver's controller
-        if (controller2.crossOnce()) {
-            gripperStowed = !gripperStowed;
+        // Reset heading when base driver presses square
+        if (controller1.squareOnce()) {
+            robot.resetHeading();
         }
 
         // Add some telemetry information for convenience
@@ -81,7 +79,7 @@ public class HeadlessOp extends OpMode {
 
         // Change multiplier when base driver presses circle
         if (controller1.circleOnce()) {
-            multiplier = multiplier == 1.0 ? 0.25 : 1.0;
+            multiplier = multiplier == .80 ? 0.25 : .80;
         }
 
         // Set grippers to open when the left bumper is pressed
