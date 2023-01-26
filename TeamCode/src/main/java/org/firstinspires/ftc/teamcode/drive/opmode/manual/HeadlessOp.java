@@ -98,32 +98,42 @@ public class HeadlessOp extends OpMode {
         telemetry.addData("Heading (reset: square)", robot.getHeadingDegrees());
         telemetry.update();
 
-        if (controller2.Circle() || controller2.Cross() || controller2.Square() || controller2.Triangle()) {
+        if (controller2.Circle() || controller2.Cross() ||
+                controller2.Square() || controller2.Triangle()) {
             if (controller2.Triangle()) {
-                robot.setMotors(0.75f, 0.75f, 0.75f, 0.75f, 1);
+                robot.setMotors(0.75f, 0.75f, 0.75f,
+                        0.75f, 1);
             }
             if (controller2.Cross()) {
-                robot.setMotors(-0.75f, -0.75f, -0.75f, -0.75f, 1);
+                robot.setMotors(-0.75f, -0.75f, -0.75f,
+                        -0.75f, 1);
             }
             if (controller2.Square()) {
-                robot.setMotors(-0.75f, 0.75f, 0.75f, -0.75f, 1);
+                robot.setMotors(-0.75f, 0.75f, 0.75f,
+                        -0.75f, 1);
             }
             if (controller2.Circle()) {
-                robot.setMotors(0.75f, -0.75f, -0.75f, 0.75f, 1);
+                robot.setMotors(0.75f, -0.75f, -0.75f,
+                        0.75f, 1);
             }
         }
-        else if (controller2.dpadDown() || controller2.dpadUp() || controller2.dpadLeft() || controller2.dpadRight()) {
+        else if (controller2.dpadDown() || controller2.dpadUp() ||
+                controller2.dpadLeft() || controller2.dpadRight()) {
             if (controller2.dpadUp()) {
-                robot.setMotors(0.1f, 0.1f, 0.1f, 0.1f, 1);
+                robot.setMotors(0.1f, 0.1f, 0.1f,
+                        0.1f, 1);
             }
             if (controller2.dpadDown()) {
-                robot.setMotors(-0.1f, -0.1f, -0.1f, -0.1f, 1);
+                robot.setMotors(-0.1f, -0.1f, -0.1f,
+                        -0.1f, 1);
             }
             if (controller2.dpadLeft()) {
-                robot.setMotors(-0.1f, 0.1f, 0.1f, -0.1f, 1);
+                robot.setMotors(-0.1f, 0.1f, 0.1f,
+                        -0.1f, 1);
             }
             if (controller2.dpadRight()) {
-                robot.setMotors(0.1f, -0.1f, -0.1f, 0.11f, 1);
+                robot.setMotors(0.1f, -0.1f, -0.1f,
+                        0.11f, 1);
             }
         }
         else if (controller2.rightBumper()) {
@@ -133,7 +143,8 @@ public class HeadlessOp extends OpMode {
             robot.setMotors(-0.15f, -0.15f, 0.15f, 0.15f, 1);
         }
         else {
-            // Get input from the base driver's left stick and take it to the third power to increase low-range resolution
+            // Get input from the base driver's left stick and take it to
+            // the third power to increase low-range resolution
             final double x = -Math.pow(controller1.left_stick_x, 3.0);
             final double y = Math.pow(controller1.left_stick_y, 3.0);
             final double rotation = Math.pow(controller1.right_trigger - controller1.left_trigger, 3.0);
@@ -145,14 +156,16 @@ public class HeadlessOp extends OpMode {
             final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
 
             // another attempt at making sense of this headless stuff
-            // basically splitting apart everything into basic x and y again, but with direction, then doing it like normal? idk man it's 3am and i'm confused
+            // basically splitting apart everything into basic x and y again, but with direction,
+            // then doing it like normal? idk man it's 3am and i'm confused
             final double y_proc = -1 * speed * Math.sin(direction + Math.PI / 2.0);
             final double x_proc = speed * Math.cos(direction + Math.PI / 2.0);
 
             // This is Mecanum stuff, I'll do my best to explain
         /*
             To move forward and backward, you apply the same rotation to all motors
-            To move side to side, each pair of diagonal motors moves together, but the motors on each side move opposite each other
+            To move side to side, each pair of diagonal motors moves together,
+            but the motors on each side move opposite each other
             The rotation is different from normal for some strange reason. I have no clue why. Sorry.
          */
             final double leftFront = y_proc + x_proc + rotation;
