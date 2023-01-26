@@ -130,7 +130,8 @@ public class Controller {
 
     public boolean leftTrigger() {return  0 < left_trigger;}
 
-    // These functions debounce the button (if the button is held for a long time it will not count as multiple presses)
+    // These functions debounce the button (if the button is held for a long time it will not count
+    // as multiple presses)
     // They only return true if the value of a button is equal to 1
     public boolean dpadUpOnce() {
         return 1 == dpad_up;

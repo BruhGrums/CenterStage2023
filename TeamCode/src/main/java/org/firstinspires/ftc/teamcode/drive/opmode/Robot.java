@@ -201,7 +201,8 @@ public class Robot {
     }
 
     // gripPower takes the position of the gripper from 0 to 1 (0 is open, 1 is closed)
-    // The stowed variable pulls the grippers further back than normal operation, needs to be calibrated better
+    // The stowed variable pulls the grippers further back than normal operation, needs to be
+    // calibrated better
     public void setGrip(boolean grip) {
         double leftOpen = 0.0, leftClosed = 105.0;
         double rightOpen = 270.0, rightClosed = 175.0;
