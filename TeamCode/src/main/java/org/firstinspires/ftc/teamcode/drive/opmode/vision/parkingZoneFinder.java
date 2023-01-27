@@ -68,6 +68,8 @@ public class parkingZoneFinder extends OpenCvPipeline {
         return output;
     }
 
+    // This allows us to get the zone out from the finder pipeline
+    // It may be a different setup using tensorflow but I can help at the meet
     public parkingZone getParkingZone() {
         if (oneAvg > twoAvg && oneAvg > threeAvg) {
             return parkingZone.ZONE1;

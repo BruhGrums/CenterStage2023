@@ -194,6 +194,8 @@ public class redRightScore extends LinearOpMode {
         sleep(250);
     }
 
+    // This code parks our robot using a list of locations and zones. If you were to use encoders
+    // it would work a bit differently, but i hope this helps
     private void parkBot(SampleMecanumDrive _drive, int _zone, Pose2d[] locations) {
         _drive.updatePoseEstimate();
         Trajectory moveToPark = _drive.trajectoryBuilder(_drive.getPoseEstimate())
