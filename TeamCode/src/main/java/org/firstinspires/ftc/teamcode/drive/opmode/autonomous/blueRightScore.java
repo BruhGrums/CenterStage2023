@@ -21,7 +21,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class blueRightScore extends LinearOpMode {
 
     private final Pose2d startPose = new Pose2d(36, -63, Math.toRadians(90));
-    private final Pose2d scorePose = new Pose2d(40, -12, Math.toRadians(141));
+    private final Pose2d scorePose = new Pose2d(40, -14, Math.toRadians(141));
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
@@ -98,7 +98,7 @@ public class blueRightScore extends LinearOpMode {
 
         // Increase the height of the slide and increase its velocity
         drive.setHeight(4200);
-        drive.setExtension(720);
+        drive.setExtension(670);
 
         drive.followTrajectorySequence(goToStack);
 
@@ -151,7 +151,7 @@ public class blueRightScore extends LinearOpMode {
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
-        _drive.setExtension(2050);
+        _drive.setExtension(2100);
         sleep(750);
         _drive.setGrip(true);
         sleep(450);
@@ -178,7 +178,7 @@ public class blueRightScore extends LinearOpMode {
 
         _drive.followTrajectorySequence(reposition);
 
-        _drive.setExtension(700);
+        _drive.setExtension(650);
 
         // Wait for wiggles to stop just in case
         sleep(250);
