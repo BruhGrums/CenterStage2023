@@ -21,7 +21,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class blueRightScore extends LinearOpMode {
 
     private final Pose2d startPose = new Pose2d(36, -63, Math.toRadians(90));
-    private final Pose2d scorePose = new Pose2d(40, -14, Math.toRadians(141));
+    private final Pose2d scorePose = new Pose2d(40, -12.5, Math.toRadians(141));
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
