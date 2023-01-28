@@ -128,6 +128,10 @@ public class blueRightScore extends LinearOpMode {
     }
 
     private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
+        int addExt = 0;
+        if (stackHeight == 5) {
+            addExt = 40;
+        }
         // stackHeight is given as height of stack in cones
         //step one
         _drive.setExtension(500);
@@ -151,7 +155,7 @@ public class blueRightScore extends LinearOpMode {
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
-        _drive.setExtension(2100);
+        _drive.setExtension(2125 + addExt);
         sleep(750);
         _drive.setGrip(true);
         sleep(450);
