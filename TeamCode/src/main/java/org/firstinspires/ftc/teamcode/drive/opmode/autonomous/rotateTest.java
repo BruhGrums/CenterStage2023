@@ -54,13 +54,7 @@ public class rotateTest extends LinearOpMode {
                 )
                 .build();
 
-        TrajectorySequence turnRight = drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(-90), Math.toRadians(120), Math.toRadians(90))
-                .build();
 
-        TrajectorySequence turnLeft = drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(90), Math.toRadians(120), Math.toRadians(90))
-                .build();
 
         waitForStart();
 
@@ -68,9 +62,22 @@ public class rotateTest extends LinearOpMode {
 
         for (int i = 0; i < 3; i++) {
             sleep(500);
-            drive.followTrajectorySequence(turnLeft);
-            sleep(500);
+
+            drive.updatePoseEstimate();
+            TrajectorySequence turnRight = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .turn(Math.toRadians(-90), Math.toRadians(30), Math.toRadians(30))
+                    .build();
+
             drive.followTrajectorySequence(turnRight);
+
+            sleep(500);
+
+            drive.updatePoseEstimate();
+            TrajectorySequence turnLeft = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .turn(Math.toRadians(90), Math.toRadians(30), Math.toRadians(30))
+                    .build();
+
+            drive.followTrajectorySequence(turnLeft);
         }
     }
 }
