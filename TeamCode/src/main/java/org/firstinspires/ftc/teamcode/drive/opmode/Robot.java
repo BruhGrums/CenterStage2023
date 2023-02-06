@@ -19,13 +19,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * drive train and a gyro sensor.
  */
 public class Robot {
+
+    // Create a HardwareMap object to communicate with the Rev Control Hub
     private final HardwareMap hardwareMap;
+
+    // Create a Telemetry object to communicate with the Driver Control Hub
     private final Telemetry telemetry;
 
-    // Create motor, servo, and gyro objects
+    // Create motor objects
     private final DcMotor leftFront, leftRear, rightFront, rightRear;
     private final DcMotor slideLeft, slideRight, slideTop;
+
+    // Create IMU object
     private final BNO055IMU imu;
+
+    // Create servo objects
     private final Servo leftGripServo, rightGripServo;
 
     // Create variables for headless operation
@@ -33,14 +41,13 @@ public class Robot {
     private Orientation angles;          // Uses builtin libraries to retrieve heading angle
     private Acceleration gravity;        // Builtin function for the control hub to find orientation
 
-    // Create robot class
+    // Create the Robot class constructor
     public Robot(final HardwareMap _hardwareMap, final Telemetry _telemetry) {
-        // Pass variables through to Robot class
+        // Pass variables through to Robot class to avoid conflicts
         hardwareMap = _hardwareMap;
         telemetry = _telemetry;
 
-        // Ask the driver hub which port each motor is attached to based on robot configuration
-        // Configuration is managed at the three dots on the top right of the driver hub
+        // Ask the Driver Hub which port each motor is attached to based on robot config
         leftFront = hardwareMap.dcMotor.get("leftFront");
         rightFront = hardwareMap.dcMotor.get("rightFront");
         leftRear = hardwareMap.dcMotor.get("leftRear");
@@ -50,23 +57,32 @@ public class Robot {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Set up gyro. This is black magic. I have no idea what it does.
+        // Set up gyro
+
+        // Ask the Driver Hub for our IMU
         imu = hardwareMap.get(BNO055IMU.class, "imu");
+        // Create a parameters object so we can customize our IMU setup
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        // Set our units
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        // Tell our IMU where to look for its calibration
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        // Set up logging
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
+        // Tell the imu that we don't need it to integrate velocity and position from acceleration
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        // Initialize our IMU using the parameters we just set
         imu.initialize(parameters);
 
-        // Do the same thing we did earlier with the drive motors, just for the slide
+        // Ask the Driver Hub which port each slide motor is attached to based on robot config
         slideLeft = hardwareMap.dcMotor.get("slideLeft");
         slideRight = hardwareMap.dcMotor.get("slideRight");
         slideTop = hardwareMap.dcMotor.get("slideTop");
 
-        // One of the slide motors MUST be reversed or teh two motors will fight each other
+        // Reverse one slide motor. This must be done since we are using a mirrored Viper slide and
+        // the motors will fight if one is not reversed
         slideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Tell the slide motors to brake whenever we don't give any input
@@ -74,16 +90,17 @@ public class Robot {
         slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // Set up the servos how we did the rest of the motors
+        // Ask the Driver Hub which port each servo is attached to based on robot config
         leftGripServo = hardwareMap.servo.get("leftGripServo");
         rightGripServo = hardwareMap.servo.get("rightGripServo");
     }
 
-    // This function accepts a motor mode followed by a list of DcMotor objects
+    // This function is used to update the RunMode of multiples DcMotors at once
+    // It takes a RunMode argument followed by a list of DcMotor objects
     private void setMotorMode(DcMotor.RunMode mode, DcMotor... motors) {
-        // Iterate over each DcMotor object and set their motor mode
+        // Iterate over each DcMotor object
         for (DcMotor motor : motors) {
-            motor.setMode(mode);
+            motor.setMode(mode);    // Set the motor mode of the current DcMotor object
         }
     }
 
@@ -102,15 +119,17 @@ public class Robot {
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER, slideLeft, slideRight);
     }
 
-    // Invoke setMotorMode() to turn on slide encoders
+    // Invoke setMotorMode() to turn off slide encoders
     public void runSlideWithoutEncoders() {
         setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER, slideLeft, slideRight);
     }
 
-    // Does the same thing as setMotorMode(), just with a zeroPowerMode
+    // This function is used to update the ZeroPowerBehavior of multiples DcMotors at once
+    // It takes a ZeroPowerBehavior argument followed by a list of DcMotor objects
     private void setBrake(DcMotor.ZeroPowerBehavior mode, DcMotor... motors) {
+        // Iterate over each DcMotor object
         for (DcMotor motor : motors) {
-            motor.setZeroPowerBehavior(mode);
+            motor.setZeroPowerBehavior(mode);   // Set the zero power mode of the current DcMotor
         }
     }
 
@@ -124,49 +143,50 @@ public class Robot {
         setBrake(DcMotor.ZeroPowerBehavior.FLOAT, leftFront, leftRear, rightFront, rightRear);
     }
 
-    // Return true if the gyro is calibrated
+    // Public Boolean wrapper to allow outside functions to access gyro calibration state
     public boolean isGyroCalibrated() {
         return imu.isGyroCalibrated();
     }
 
-    // Refreshes gyro values when called by an opmode
-    // These are computationally expensive tasks so don't call this extra times for fun
+    // This function refreshes gyro values when called by an opmode
+    // These are computationally expensive tasks so don't call this function extra times for fun
     public void loop() {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,AngleUnit.RADIANS);
         gravity = imu.getGravity();
     }
 
-    // Return the raw heading
+    // This function returns the raw heading angle of the IMU
     private double getRawHeading() {
         return angles.firstAngle;
     }
 
-    // Subtract our heading offset from the raw heading to give us relative heading
-    // Then modulo by 2pi to make sure that we are between 0 and 2pi
+    /*
+        This functions gives us our relative heading considering offset
+        It subtracts the headingOffset from the raw heading
+        To prevent heading outputs of greater than 360° we mod the output by 2pi
+     */
     public double getHeading() {
         return (getRawHeading() - headingOffset) % (2.0 * Math.PI);
     }
 
-    // Change our current heading to degrees and return it
+    // Since the default output of the getHeading() function is in radians, this functions changes
+    // it to degrees
     public double getHeadingDegrees() { return Math.toDegrees(getHeading()); }
 
     // Set the heading offset to our current heading
-    // This means that any angles after this will be measured relative to this heading
+    // This means that any angles after this will be measured relative to the current heading
     public void resetHeading() {
         headingOffset = getRawHeading();
     }
 
-    /**
-     * Find the maximum absolute value of a set of numbers.
-     *
-     * @param xs Some number of double arguments
-     * @return double maximum absolute value of all arguments
-     */
+    // Returns the greatest magnitude from a list of Doubles
+    // The parameter xs takes a list of Double arguments
     private static double maxAbs(double... xs) {
-        double ret = Double.MIN_VALUE;
-        for (double x : xs) {
-            if (Math.abs(x) > ret) {
-                ret = Math.abs(x);
+        double ret = Double.MIN_VALUE;  // We set our return value to the minimum possible Double
+        for (double x : xs) {           // Next we iterate over every Double in the list
+            if (Math.abs(x) > ret) {    // If the absolute value of the current Double is greater
+                                        // than our return variable...
+                ret = Math.abs(x);      // ...we set our return variable equal to the current Double
             }
         }
         return ret;
@@ -193,20 +213,25 @@ public class Robot {
         rightRear.setPower((_rightRear * multiplier) / scale);
     }
 
-    // Provide a convenient way to set all the slide motors
+    // Provide a convenient way to set all the slide motors from a single function
     public void setSlideMotors(double _slideLeft, double _slideRight, double _slideTop) {
         slideLeft.setPower(_slideLeft);
         slideRight.setPower(_slideRight);
         slideTop.setPower(_slideTop);
     }
 
-    // gripPower takes the position of the gripper from 0 to 1 (0 is open, 1 is closed)
-    // The stowed variable pulls the grippers further back than normal operation, needs to be
-    // calibrated better
+    // This functions opens and closes our gripper based on a boolean value
     public void setGrip(boolean grip) {
+        // Hardcode our opened and closed servo positions (in degrees)
         double leftOpen = 0.0, leftClosed = 105.0;
         double rightOpen = 270.0, rightClosed = 175.0;
 
+        /*
+            Dividing by 270 is required to properly set the Servo positions
+            The servos require a value from 0 to 1 to set their position,
+            and our particular servos have a range of 270°
+            Dividing by 270 converts our degrees to a value from 0 to 1
+         */
         if (grip) {
             leftGripServo.setPosition(leftClosed / 270);
             rightGripServo.setPosition(rightClosed / 270);
