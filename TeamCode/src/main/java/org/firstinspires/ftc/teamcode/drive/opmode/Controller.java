@@ -18,18 +18,23 @@ public class Controller {
     public double left_stick_x, right_stick_x, left_stick_y, right_stick_y;
     public double left_trigger, right_trigger;
 
-    // Idk what this does but it's supposed to be here for something
+    // This Constructor assigns a given Gamepad object to the gamepad variable
     public Controller(Gamepad g) {
         gamepad = g;
     }
 
-    // When the opmode calls this function, all of the variables will be updated (usually once per opmode loop)
-    // If a button is pressed on a certain loop, increment that value, if it is not pressed reset that value to 0
+    /*
+        This function handles querying the gamepad
+        Each time this function is run, it checks the values of all the sticks and buttons
+        If a button is pressed, its variable is incremented by 1
+        If a button is not pressed, its variable is set to 0
+        Analog values are read directly to their respective variables
+     */
     public void update() {
         if (gamepad.square) {
-            ++square;
+            ++square;   // if pressed, increment variable
         } else {
-            square = 0;
+            square = 0; // if not pressed, set to zero
         }
         if (gamepad.triangle) {
             ++triangle;
@@ -77,6 +82,7 @@ public class Controller {
             right_bumper = 0;
         }
 
+        // This block handles storing the position of the analog inputs as doubles from -1 to 1
         left_stick_x = gamepad.left_stick_x;
         left_stick_y = gamepad.left_stick_y;
         right_stick_x = gamepad.right_stick_x;
@@ -85,7 +91,12 @@ public class Controller {
         right_trigger = gamepad.right_trigger;
     }
 
-    // These function will return true whenever the value of a button is greater than 0, false otherwise
+    /*
+        This block of functions provide public boolean wrappers for the private button variables
+        If a button's variable is greater than 0, its function will evaluate to true
+        If a button's variable is 0, its function will evaluate to false
+        These functions are good for querying buttons that will be held for a period of time
+     */
     public boolean dpadUp() {
         return 0 < dpad_up;
     }
@@ -126,6 +137,13 @@ public class Controller {
         return 0 < right_bumper;
     }
 
+    /*
+        This block of functions provide public boolean wrappers for debounced buttons states
+        If a button's variable is equal to 1, its function will evaluate to true
+        If a button's variable is 0, its function will evaluate to false
+        If a button's variable is greater than 1, its function will evaluate to false
+        This ensures that a button is recognized as pressed only 1 time, which is useful for toggles
+     */
     public boolean rightTrigger() {return 0 < right_trigger;}
 
     public boolean leftTrigger() {return  0 < left_trigger;}
