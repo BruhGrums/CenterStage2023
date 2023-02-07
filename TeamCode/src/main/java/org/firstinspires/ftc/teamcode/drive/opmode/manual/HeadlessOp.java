@@ -16,27 +16,31 @@ import org.firstinspires.ftc.teamcode.drive.opmode.Robot;
  */
 @TeleOp(name = "HeadlessOp")
 public class HeadlessOp extends OpMode {
-    // Create new robot and controller objects from the classes we defined
+
+    // Create new Robot object named robot
     private Robot robot;
+    // Create two new Controller objects, one for each gamepad
     private Controller controller1, controller2;
 
     // Set up some useful variables
     private boolean headlessMode = false;   // Allows us to toggle headless mode on and off
-    private boolean grip = false;                // Controls how far open or closed the gripper is
-    private double multiplier = 0.8;       // Allows us to slow down the motor speed
+    private boolean grip = false;           // Controls how far open or closed the gripper is
+    private double multiplier = 0.8;        // Allows us to scale down the motor speed
 
+    // This code will run when the init button is pressed on the Driver Hub
     @Override
     public void init() {
         // Basic setup
-        robot = new Robot(hardwareMap, telemetry);
-        robot.runUsingEncoders();
-        robot.runSlideWithoutEncoders();
-        controller1 = new Controller(gamepad1);
-        controller2 = new Controller(gamepad2);
+        robot = new Robot(hardwareMap, telemetry);  // Initialize our robot class
+        robot.runUsingEncoders();                   // Tell our drive motors to use encoders
+        robot.runSlideWithoutEncoders();            // Tell our slide motors not to use encoders
+        controller1 = new Controller(gamepad1);     // Initialize controller1
+        controller2 = new Controller(gamepad2);     // Initialize controller2
 
-        robot.runWithBrakes();
+        robot.runWithBrakes();  // Tell our driv motors to use brakes
     }
 
+    // This code will after the init block and will loop until the start button is pressed
     @Override
     public void init_loop() {
         // Check for controller updates
@@ -59,12 +63,13 @@ public class HeadlessOp extends OpMode {
         telemetry.update();
     }
 
+    // This code will run once the start button is pressed
     @Override
     public void loop() {
         // Check controllers for updates
-        // Update robot heading
         controller1.update();
         controller2.update();
+        // Update robot heading
         robot.loop();
 
         // Reset heading when base driver presses square
@@ -77,16 +82,16 @@ public class HeadlessOp extends OpMode {
             headlessMode = !headlessMode;
         }
 
-        // Change multiplier when base driver presses circle
+        // Change drive multiplier when base driver presses circle
         if (controller1.circleOnce()) {
             multiplier = multiplier == .80 ? 0.25 : .80;
         }
 
-        // Set grippers to open when the left bumper is pressed
+        // Set grippers to open when the left trigger is pressed
         if (controller2.leftTriggerOnce()) {
             grip = false;
         }
-        // Set grippers to close when the right bumper is pressed
+        // Set grippers to close when the right trigger is pressed
         if (controller2.rightTriggerOnce()) {
             grip = true;
         }
@@ -96,6 +101,8 @@ public class HeadlessOp extends OpMode {
         telemetry.addData("Heading (reset: square)", robot.getHeadingDegrees());
         telemetry.update();
 
+        // This large if/else block allows the arm driver to take control of the base to make fine
+        // adjustments. This cuts down on communication slowdowns in some cases
         if (controller2.Circle() || controller2.Cross() ||
                 controller2.Square() || controller2.Triangle()) {
             if (controller2.Triangle()) {
@@ -140,6 +147,7 @@ public class HeadlessOp extends OpMode {
         else if (controller2.leftBumper()) {
             robot.setMotors(-0.15f, -0.15f, 0.15f, 0.15f, 1);
         }
+        // When the arm driver isn't overriding base controls, this code controls the motor
         else {
             // Get input from the base driver's left stick and take it to
             // the third power to increase low-range resolution
