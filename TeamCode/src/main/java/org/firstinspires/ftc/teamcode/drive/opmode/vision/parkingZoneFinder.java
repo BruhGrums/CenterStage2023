@@ -39,18 +39,23 @@ public class parkingZoneFinder extends OpenCvPipeline {
     private int zoneNumber = -1;
 
     public Mat processFrame(Mat input) {
-        //input.copyTo(output);
+
+        // We reduce our mat to only hold the pixels we are interested in
         targetMat = input.submat(targetArea);
+        // We convert that mat to the YcBcR colorspace for easier masking
         Imgproc.cvtColor(targetMat, YcBcR, Imgproc.COLOR_RGB2YCrCb);
 
+        // The YcBcR conversion is then split into three separate masks for each parking zone
         Core.inRange(YcBcR, oneLower, oneUpper, oneMat);
         Core.inRange(YcBcR, twoLower, twoUpper, twoMat);
         Core.inRange(YcBcR, threeLower, threeUpper, threeMat);
 
+        // Now we see how many pixels made it through the masking process in each mask
         oneAvg = Core.mean(oneMat).val[0];
         twoAvg = Core.mean(twoMat).val[0];
         threeAvg = Core.mean(threeMat).val[0];
 
+        // Depending on which mask has the most pixels, we select a parking zone
         if (oneAvg > twoAvg && oneAvg > threeAvg) {
             zoneNumber = 1;
         } else if (twoAvg > oneAvg && twoAvg > threeAvg) {
@@ -59,10 +64,13 @@ public class parkingZoneFinder extends OpenCvPipeline {
             zoneNumber = 3;
         }
 
+        // Copy our input to our output for easier debugging
         input.copyTo(output);
 
+        // Display our target area rectangle on the camera stream to help aim the camera
         Imgproc.rectangle(output, targetArea, new Scalar(255.0, 0.0, 0.0), 2);
 
+        // Write the current parking zone on the camera stream for easier debugging
         Imgproc.putText(output, "Zone #" + String.valueOf(zoneNumber), new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
 
         return output;
