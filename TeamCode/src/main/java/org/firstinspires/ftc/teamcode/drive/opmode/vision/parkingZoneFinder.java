@@ -18,6 +18,8 @@ public class parkingZoneFinder extends OpenCvPipeline {
     }
 
     // Scalars to define color ranges of interest
+
+    // (key , Bule , red) 
     public final Scalar oneLower = new Scalar(0.0, 100.0, 0.0);
     public final Scalar oneUpper = new Scalar(255.0, 255.0, 100.0);
 
