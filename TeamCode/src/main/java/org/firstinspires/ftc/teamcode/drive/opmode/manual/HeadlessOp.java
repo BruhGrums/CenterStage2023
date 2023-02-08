@@ -32,7 +32,7 @@ public class HeadlessOp extends OpMode {
     public void init() {
         // Basic setup
         robot = new Robot(hardwareMap, telemetry);  // Initialize our robot class
-        robot.runUsingEncoders();                   // Tell our drive motors to use encoders
+        robot.runWithoutEncoders();                   // Tell our drive motors to use encoders
         robot.runSlideWithoutEncoders();            // Tell our slide motors not to use encoders
         controller1 = new Controller(gamepad1);     // Initialize controller1
         controller2 = new Controller(gamepad2);     // Initialize controller2
