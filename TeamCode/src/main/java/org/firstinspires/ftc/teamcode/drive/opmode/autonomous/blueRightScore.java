@@ -20,9 +20,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous(name = "Blue Right Score")
 public class blueRightScore extends LinearOpMode {
 
-    private final Pose2d startPose = new Pose2d(36, -63, Math.toRadians(90));
-    private final Pose2d scorePose = new Pose2d(40, -12.5, Math.toRadians(141));
-    private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
+    private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90));
+    private final Pose2d scorePose = new Pose2d(41.5, -12, Math.toRadians(90));
+    private final Pose2d stackPose = new Pose2d(44.5, -12, Math.toRadians(0));
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 
@@ -48,12 +48,17 @@ public class blueRightScore extends LinearOpMode {
 
         // Create the first trajectory to be run when the round starts
 
-        TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(scorePose,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
+        TrajectorySequence goToScore = drive.trajectorySequenceBuilder(startPose)
+                .lineToConstantHeading(scorePose.vec())
+                .turn(Math.toRadians(55), Math.toRadians(120), Math.toRadians(90))
+                .build();
+
+        TrajectorySequence scoreToStack = drive.trajectorySequenceBuilder(new Pose2d(scorePose.vec(), Math.toRadians(145)))
+                .lineToSplineHeading(stackPose)
+                .build();
+
+        TrajectorySequence stackToScore = drive.trajectorySequenceBuilder(stackPose)
+                .lineToSplineHeading(new Pose2d(scorePose.vec(), Math.toRadians(145)))
                 .build();
 
         // Set up the webcam
@@ -100,7 +105,7 @@ public class blueRightScore extends LinearOpMode {
         drive.setHeight(4200);
         drive.setExtension(670);
 
-        drive.followTrajectorySequence(goToStack);
+        drive.followTrajectorySequence(goToScore);
 
         // Without waiting, run the trajectory we prepared earlier
         // This will take us to our cycle location
@@ -116,6 +121,12 @@ public class blueRightScore extends LinearOpMode {
         // Wait for grip to fully open and cone to drop
         sleep(500);
 
+        drive.followTrajectorySequence(scoreToStack);
+        sleep(1000);
+        drive.followTrajectorySequence(stackToScore);
+        sleep(1000);
+
+        /*
         for (int i = 5; i > 2; i--) {
             toStack(drive, i);
             scoreCone(drive, i);
@@ -125,6 +136,7 @@ public class blueRightScore extends LinearOpMode {
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
         else { parkBot(drive, 1, parkingSpots); }
+        */
     }
 
     private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
