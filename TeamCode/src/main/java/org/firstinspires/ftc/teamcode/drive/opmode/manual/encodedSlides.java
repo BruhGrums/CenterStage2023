@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp
+@TeleOp(group = "testing")
 public class encodedSlides extends LinearOpMode {
     DcMotorEx slideLeft, slideRight, slideTop;
 
