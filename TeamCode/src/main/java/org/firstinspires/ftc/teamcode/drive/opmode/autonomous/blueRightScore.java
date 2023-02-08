@@ -24,7 +24,8 @@ public class blueRightScore extends LinearOpMode {
     private final Pose2d scorePose = new Pose2d(41.5, -12, Math.toRadians(90));
     private final Pose2d stackPose = new Pose2d(44.5, -12, Math.toRadians(0));
 
-    private final double travelSpeed = 45.0, travelAccel = 30.0;
+    private final double maxVel = 50, maxAccel = 50;
+    private final double maxAngVel = Math.toRadians(120), maxAngAccel = Math.toRadians(90);
 
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
             -20, Math.toRadians(90)), new Pose2d(60, -17, Math.toRadians(90))};
@@ -49,16 +50,25 @@ public class blueRightScore extends LinearOpMode {
         // Create the first trajectory to be run when the round starts
 
         TrajectorySequence goToScore = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(scorePose.vec())
+                .lineToConstantHeading(scorePose.vec(),
+                        SampleMecanumDrive.getVelocityConstraint(maxVel, maxAngVel, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(maxAccel)
+                )
                 .turn(Math.toRadians(55), Math.toRadians(120), Math.toRadians(90))
                 .build();
 
         TrajectorySequence scoreToStack = drive.trajectorySequenceBuilder(new Pose2d(scorePose.vec(), Math.toRadians(145)))
-                .lineToSplineHeading(stackPose)
+                .lineToSplineHeading(stackPose,
+                        SampleMecanumDrive.getVelocityConstraint(maxVel, maxAngVel, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(maxAccel)
+                )
                 .build();
 
         TrajectorySequence stackToScore = drive.trajectorySequenceBuilder(stackPose)
-                .lineToSplineHeading(new Pose2d(scorePose.vec(), Math.toRadians(145)))
+                .lineToSplineHeading(new Pose2d(scorePose.vec(), Math.toRadians(145)),
+                        SampleMecanumDrive.getVelocityConstraint(maxVel, maxAngVel, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(maxAccel)
+                )
                 .build();
 
         // Set up the webcam
@@ -121,53 +131,25 @@ public class blueRightScore extends LinearOpMode {
         // Wait for grip to fully open and cone to drop
         sleep(500);
 
-        drive.followTrajectorySequence(scoreToStack);
-        sleep(1000);
-        drive.followTrajectorySequence(stackToScore);
-        sleep(1000);
-
-        /*
         for (int i = 5; i > 2; i--) {
-            toStack(drive, i);
-            scoreCone(drive, i);
+            toStack(drive, scoreToStack,i);
+            scoreCone(drive, stackToScore, i);
         }
 
         if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
         else { parkBot(drive, 1, parkingSpots); }
-        */
     }
 
-    private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
-        int addExt = 0;
-        if (stackHeight == 5) {
-            addExt = 40;
-        }
+    private void toStack(SampleMecanumDrive _drive, TrajectorySequence trajSeq, int stackHeight) {
         // stackHeight is given as height of stack in cones
         //step one
         _drive.setExtension(500);
         sleep(200);
 
-        int add = 5;
-
-        if (stackHeight == 5) {
-            add = 0;
-        }
-
-        _drive.updatePoseEstimate();
-        TrajectorySequence turnToStack = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
-                .addTemporalMarker(0.5, () -> {
-                    _drive.setHeight(120 + (stackHeight * 145));
-                })
-                .addTemporalMarker(1, () -> {
-                    _drive.setExtension(1700);
-                })
-                .turn(Math.toRadians(-139 - add), Math.toRadians(120), Math.toRadians(90))
-                .build();
-
-        _drive.followTrajectorySequence(turnToStack);
-        _drive.setExtension(2125 + addExt);
+        _drive.followTrajectorySequence(trajSeq);
+        _drive.setExtension(1800);
         sleep(750);
         _drive.setGrip(true);
         sleep(450);
@@ -179,20 +161,11 @@ public class blueRightScore extends LinearOpMode {
         _drive.setExtension(700);
     }
 
-    private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
-        int add = 0;
-
-        if (stackHeight == 5) {
-            add = 3;
-        }
-        _drive.updatePoseEstimate();
-        TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(138 - add), Math.toRadians(120), Math.toRadians(90))
-                .build();
+    private void scoreCone(SampleMecanumDrive _drive, TrajectorySequence trajSeq, int stackHeight) {
 
         _drive.setHeight(4100);
 
-        _drive.followTrajectorySequence(reposition);
+        _drive.followTrajectorySequence(trajSeq);
 
         _drive.setExtension(650);
 
