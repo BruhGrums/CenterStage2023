@@ -148,6 +148,7 @@ public class blueRightScore extends LinearOpMode {
         _drive.setExtension(500);
         sleep(200);
 
+        _drive.setHeight(120 + (stackHeight * 145));
         _drive.followTrajectorySequence(trajSeq);
         _drive.setExtension(1800);
         sleep(750);
