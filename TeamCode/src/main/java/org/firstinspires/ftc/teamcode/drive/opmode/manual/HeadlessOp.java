@@ -25,7 +25,10 @@ public class HeadlessOp extends OpMode {
     // Set up some useful variables
     private boolean headlessMode = false;   // Allows us to toggle headless mode on and off
     private boolean grip = false;           // Controls how far open or closed the gripper is
-    private double multiplier = 0.8;        // Allows us to scale down the motor speed
+
+    private final double mainMultiplier = 0.7;
+    private final double adjustMultiplier = 0.25;
+    private double multiplier = mainMultiplier;        // Allows us to scale down the motor speed
 
     // This code will run when the init button is pressed on the Driver Hub
     @Override
@@ -84,7 +87,7 @@ public class HeadlessOp extends OpMode {
 
         // Change drive multiplier when base driver presses circle
         if (controller1.circleOnce()) {
-            multiplier = multiplier == .80 ? 0.25 : .80;
+            multiplier = multiplier == mainMultiplier ? adjustMultiplier : mainMultiplier;
         }
 
         // Set grippers to open when the left trigger is pressed
