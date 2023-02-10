@@ -1,73 +1,74 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.opmode.vision.poleFinder;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.parkingZoneFinder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
-@Autonomous(name = "Blue Right Score")
+@Autonomous(name = "Blue Right Score")   //Telemtry allows us in the driver hub quickly chose which program to run
 public class blueRightScore extends LinearOpMode {
+    //extends linearOpMode allows us to call functions from other helper classes
+    private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
+    // later be called in our first trajectories
 
-    private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90));
-    private final Pose2d scorePose = new Pose2d(41.5, -12, Math.toRadians(90));
-    private final Pose2d stackPose = new Pose2d(44.5, -12, Math.toRadians(0));
+    //score pose is the x and y that our IMU tries to go too and the engocders goathers position data. The heading should looking at the nearest high junction
+    private final Pose2d scorePose = new Pose2d(40, -11, Math.toRadians(141));
 
-    private final double maxVel = 50, maxAccel = 50;
-    private final double maxAngVel = Math.toRadians(120), maxAngAccel = Math.toRadians(90);
-
+    // stack pose is what we point to when calling in our function so that we dont have to constantly put the same code in different trajectories. Stack pose
+    // just slightly changes the postion of the robot while mainly just being a turn the change is y is for allowing the trjectory to build properly
+    private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
+    // restrictions both in m/s
+    private final double travelSpeed = 45.0, travelAccel = 30.0;
+    // the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
-            -20, Math.toRadians(90)), new Pose2d(60, -17, Math.toRadians(90))};
-
+            -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
+    // camera images sizes 1280 pixles
     private final int width = 1280, height = 720;
-
+    // creates a dive object allows us to map funtions to our moters
     SampleMecanumDrive drive;
+
+    // this is the microsoft life cam 3000
     OpenCvWebcam adjustCamera = null;
+
+    // this is just our pipeline creating the filter of color on the signal sleeve
     parkingZoneFinder parkingZonePipeline = new parkingZoneFinder();
     parkingZoneFinder.parkingZone zone;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        drive = new SampleMecanumDrive(hardwareMap);
+    public void runOpMode() throws InterruptedException {   //when we start to run
+        drive = new SampleMecanumDrive(hardwareMap);  // maps our moters to the robot
 
         // Initialize arm
-        drive.initArm();
+        drive.initArm(telemetry);
 
         // Tell the robot where it is based on a pose created earlier
         drive.setPoseEstimate(startPose);
 
         // Create the first trajectory to be run when the round starts
-
-        TrajectorySequence goToScore = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(scorePose.vec(),
-                        SampleMecanumDrive.getVelocityConstraint(maxVel, maxAngVel, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(maxAccel)
-                )
-                .turn(Math.toRadians(55), Math.toRadians(120), Math.toRadians(90))
-                .build();
-
-        TrajectorySequence scoreToStack = drive.trajectorySequenceBuilder(new Pose2d(scorePose.vec(), Math.toRadians(145)))
-                .lineToSplineHeading(stackPose,
-                        SampleMecanumDrive.getVelocityConstraint(maxVel, maxAngVel, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(maxAccel)
-                )
-                .build();
-
-        TrajectorySequence stackToScore = drive.trajectorySequenceBuilder(stackPose)
-                .lineToSplineHeading(new Pose2d(scorePose.vec(), Math.toRadians(145)),
-                        SampleMecanumDrive.getVelocityConstraint(maxVel, maxAngVel, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(maxAccel)
+// this is a trajectory we are telling the robot when goToStack is called to go from our stack pose to the score pose in a spline that looks like an s
+        TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(scorePose,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
                 .build();
 
@@ -113,9 +114,9 @@ public class blueRightScore extends LinearOpMode {
 
         // Increase the height of the slide and increase its velocity
         drive.setHeight(4200);
-        drive.setExtension(670);
+        drive.setExtension(750);
 
-        drive.followTrajectorySequence(goToScore);
+        drive.followTrajectorySequence(goToStack);
 
         // Without waiting, run the trajectory we prepared earlier
         // This will take us to our cycle location
@@ -130,45 +131,78 @@ public class blueRightScore extends LinearOpMode {
 
         // Wait for grip to fully open and cone to drop
         sleep(500);
-
+        // for liip to repeate 3 timss
+        // calles totrack fuction that turns around grabs a cone and then stops
+        // then calls score cone that goes from stack to target junction
         for (int i = 5; i > 2; i--) {
-            toStack(drive, scoreToStack,i);
-            scoreCone(drive, stackToScore, i);
+            toStack(drive, i);
+            scoreCone(drive, i);
         }
-
+// this is a qick if else statements that just calls the parkbot fucntion that just parks our bot using the zone from a list of the different parking postion
         if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
         else { parkBot(drive, 1, parkingSpots); }
     }
 
-    private void toStack(SampleMecanumDrive _drive, TrajectorySequence trajSeq, int stackHeight) {
+    private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
         // stackHeight is given as height of stack in cones
         //step one
-        _drive.setExtension(500);
-        sleep(200);
 
-        _drive.setHeight(120 + (stackHeight * 145));
-        _drive.followTrajectorySequence(trajSeq);
-        _drive.setExtension(1800);
+        // we have to do _drive because if we just did drive we would run into a localization error.
+
+        // this is after we drop we pull in the claw
+        _drive.setExtension(500);
+
+        // we wait for the claw to be pulled back becuase if we dont we would tunr and pull the junction this is also to reduce our radius which reduces
+        // our roational intertia this is a principle tought in phyics classes higher the rotational inertia the harder it is to turn and to stop turning
+
+        sleep(200);
+// when hard coding we having problems with correct radians for the first turn to the stack we have to add degrees to compensate this problem
+//we just have to call get pose esitment to allow our roboto to understnad where it is and then whrwr it wants to go.
+        _drive.updatePoseEstimate();
+        TrajectorySequence turnToStack = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
+                .addTemporalMarker(0.5, () -> {
+                    _drive.setHeight(120 + (stackHeight * 145));
+                })
+                .addTemporalMarker(1, () -> {
+                    _drive.setExtension(1850);
+                })
+                .turn(Math.toRadians(-153), Math.toRadians(120), Math.toRadians(90))
+                .build();
+
+        _drive.followTrajectorySequence(turnToStack);
+
+        // claw moves out to grab a cone from the stack
+        _drive.setExtension(2200);
+
+        //we wait because if we dont then the claw closes before we can grip a cone
         sleep(750);
+// cone is grab
         _drive.setGrip(true);
         sleep(450);
-        //end of step two
-        //start of step three
+        //this is us now lifting the cone
+
         _drive.setHeight(4100);
         sleep(350);
-        //Start of step four
+        //pull back before we turn
         _drive.setExtension(700);
     }
 
-    private void scoreCone(SampleMecanumDrive _drive, TrajectorySequence trajSeq, int stackHeight) {
+    private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
 
+        //trajectory to turn to target junction
+        _drive.updatePoseEstimate();
+        TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
+                .turn(Math.toRadians(144), Math.toRadians(120), Math.toRadians(90))
+                .build();
+// just set the height of the claw
         _drive.setHeight(4100);
+//we start to turn
+        _drive.followTrajectorySequence(reposition);
 
-        _drive.followTrajectorySequence(trajSeq);
-
-        _drive.setExtension(650);
+        // we push out our arm
+        _drive.setExtension(750);
 
         // Wait for wiggles to stop just in case
         sleep(250);

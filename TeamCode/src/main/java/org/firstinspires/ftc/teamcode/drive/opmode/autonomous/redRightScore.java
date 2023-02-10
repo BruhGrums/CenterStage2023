@@ -26,11 +26,11 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous(name = "Red Right Score")   //Telemtry allows us in the driver hub quickly chose which program to run
 public class redRightScore extends LinearOpMode {
 //extends linearOpMode allows us to call functions from other helper classes
-    private final Pose2d startPose = new Pose2d(36, -63, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
+    private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
     // later be called in our first trajectories
 
     //score pose is the x and y that our IMU tries to go too and the engocders goathers position data. The heading should looking at the nearest high junction
-    private final Pose2d scorePose = new Pose2d(40, -12, Math.toRadians(141));
+    private final Pose2d scorePose = new Pose2d(40, -11, Math.toRadians(141));
 
     // stack pose is what we point to when calling in our function so that we dont have to constantly put the same code in different trajectories. Stack pose
     // just slightly changes the postion of the robot while mainly just being a turn the change is y is for allowing the trjectory to build properly
@@ -39,7 +39,7 @@ public class redRightScore extends LinearOpMode {
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 // the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
-            -20, Math.toRadians(90)), new Pose2d(60, -17, Math.toRadians(90))};
+            -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
 // camera images sizes 1280 pixles
     private final int width = 1280, height = 720;
 // creates a dive object allows us to map funtions to our moters
@@ -57,7 +57,7 @@ public class redRightScore extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);  // maps our moters to the robot
 
         // Initialize arm
-        drive.initArm();
+        drive.initArm(telemetry);
 
         // Tell the robot where it is based on a pose created earlier
         drive.setPoseEstimate(startPose);
@@ -114,7 +114,7 @@ public class redRightScore extends LinearOpMode {
 
         // Increase the height of the slide and increase its velocity
         drive.setHeight(4200);
-        drive.setExtension(700);
+        drive.setExtension(750);
 
         drive.followTrajectorySequence(goToStack);
 
@@ -159,11 +159,6 @@ public class redRightScore extends LinearOpMode {
 
         sleep(200);
 // when hard coding we having problems with correct radians for the first turn to the stack we have to add degrees to compensate this problem
-        int add = 5;
-
-        if (stackHeight == 5) {
-            add = 0;
-        }
 //we just have to call get pose esitment to allow our roboto to understnad where it is and then whrwr it wants to go.
         _drive.updatePoseEstimate();
         TrajectorySequence turnToStack = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
@@ -171,9 +166,9 @@ public class redRightScore extends LinearOpMode {
                     _drive.setHeight(120 + (stackHeight * 145));
                 })
                 .addTemporalMarker(1, () -> {
-                    _drive.setExtension(1700);
+                    _drive.setExtension(1850);
                 })
-                .turn(Math.toRadians(-139 - add), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(-153), Math.toRadians(120), Math.toRadians(90))
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
@@ -195,16 +190,11 @@ public class redRightScore extends LinearOpMode {
     }
 
     private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
-        int add = 0;
-
-        if (stackHeight == 5) {
-            add = 3;
-        }
 
         //trajectory to turn to target junction
         _drive.updatePoseEstimate();
         TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(138 - add), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(144), Math.toRadians(120), Math.toRadians(90))
                 .build();
 // just set the height of the claw
         _drive.setHeight(4100);
@@ -212,7 +202,7 @@ public class redRightScore extends LinearOpMode {
         _drive.followTrajectorySequence(reposition);
 
         // we push out our arm 
-        _drive.setExtension(680);
+        _drive.setExtension(800);
 
         // Wait for wiggles to stop just in case
         sleep(250);

@@ -12,6 +12,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 
+import android.sax.StartElementListener;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -40,6 +42,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -350,8 +353,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     // Bundles all the functions needed to initialize the arm controls
-    public void initArm() {
+    public void initArm(Telemetry _telemetry) {
         stopAndResetMotors();
+        _telemetry.addData("toppos", slideTop.getCurrentPosition());
         setGrip(false);
         setSlideVelocity(0, slideLeft, slideRight, slideTop);
         setHeight(0);
