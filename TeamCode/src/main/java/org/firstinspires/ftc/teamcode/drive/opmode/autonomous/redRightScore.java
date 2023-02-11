@@ -174,7 +174,7 @@ public class redRightScore extends LinearOpMode {
         _drive.followTrajectorySequence(turnToStack);
 
         // claw moves out to grab a cone from the stack
-        _drive.setExtension(2200);
+        _drive.setExtension(2100);
 
         //we wait because if we dont then the claw closes before we can grip a cone
         sleep(750);
