@@ -168,7 +168,7 @@ public class blueRightScore extends LinearOpMode {
                 .addTemporalMarker(1, () -> {
                     _drive.setExtension(1850);
                 })
-                .turn(Math.toRadians(-153), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(-149), Math.toRadians(120), Math.toRadians(90))
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
@@ -186,7 +186,7 @@ public class blueRightScore extends LinearOpMode {
         _drive.setHeight(4100);
         sleep(350);
         //pull back before we turn
-        _drive.setExtension(725);
+        _drive.setExtension(750);
     }
 
     private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
@@ -202,7 +202,7 @@ public class blueRightScore extends LinearOpMode {
         _drive.followTrajectorySequence(reposition);
 
         // we push out our arm
-        _drive.setExtension(725);
+        _drive.setExtension(750);
 
         // Wait for wiggles to stop just in case
         sleep(250);
