@@ -186,7 +186,7 @@ public class redRightScore extends LinearOpMode {
         _drive.setHeight(4100);
         sleep(350);
         //pull back before we turn
-        _drive.setExtension(700);
+        _drive.setExtension(800);
     }
 
     private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {

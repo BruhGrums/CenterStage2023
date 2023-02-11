@@ -145,10 +145,10 @@ public class HeadlessOp extends OpMode {
             }
         }
         else if (controller2.rightBumper()) {
-            robot.setMotors(0.15f, 0.15f, -0.15f, -0.15f, 1);
+            robot.setMotors(0.3f, 0.3f, -0.3f, -0.3f, 1);
         }
         else if (controller2.leftBumper()) {
-            robot.setMotors(-0.15f, -0.15f, 0.15f, 0.15f, 1);
+            robot.setMotors(-0.3f, -0.3f, 0.3f, 0.3f, 1);
         }
         // When the arm driver isn't overriding base controls, this code controls the motor
         else {
