@@ -168,7 +168,7 @@ public class redRightScore extends LinearOpMode {
                 .addTemporalMarker(1, () -> {
                     _drive.setExtension(1850);
                 })
-                .turn(Math.toRadians(-149), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(-154), Math.toRadians(120), Math.toRadians(90))
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
@@ -194,7 +194,7 @@ public class redRightScore extends LinearOpMode {
         //trajectory to turn to target junction
         _drive.updatePoseEstimate();
         TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(144), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(146), Math.toRadians(120), Math.toRadians(90))
                 .build();
 // just set the height of the claw
         _drive.setHeight(4100);
