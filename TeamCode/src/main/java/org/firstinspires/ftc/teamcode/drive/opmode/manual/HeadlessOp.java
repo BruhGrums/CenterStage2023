@@ -145,7 +145,7 @@ public class HeadlessOp extends OpMode {
             }
         }
         else if (controller2.rightBumper()) {
-            robot.setMotors(0.3f, 0.3f, -0.3f, -0.3f, 1);
+            robot.setMotors(0.25, 0.25, -0.25, -0.25, 1);
         }
         else if (controller2.leftBumper()) {
             robot.setMotors(-0.3f, -0.3f, 0.3f, 0.3f, 1);
