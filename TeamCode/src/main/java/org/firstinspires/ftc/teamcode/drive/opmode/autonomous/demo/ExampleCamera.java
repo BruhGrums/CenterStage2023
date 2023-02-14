@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.demo;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -31,8 +32,10 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * This opmode is designed as a convenient, coarse tuning for the follower PID coefficients. It
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
+
+@Disabled
 @Config
-@Autonomous(group = "drive")
+@Autonomous(group = "demo")
 public class ExampleCamera extends LinearOpMode {
     OpenCvWebcam webcam;
 
