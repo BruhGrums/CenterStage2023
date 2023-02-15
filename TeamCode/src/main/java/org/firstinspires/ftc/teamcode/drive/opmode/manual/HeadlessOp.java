@@ -43,6 +43,7 @@ public class HeadlessOp extends OpMode {
         controller2 = new Controller(gamepad2);     // Initialize controller2
 
         robot.runWithBrakes();  // Tell our driv motors to use brakes
+        slides.runSlidesWithBrakes();
     }
 
     // This code will after the init block and will loop until the start button is pressed
@@ -131,7 +132,7 @@ public class HeadlessOp extends OpMode {
             robot.setMotors(0.25, 0.25, -0.25, -0.25, 1);
         }
         else if (controller2.leftBumper()) {
-            robot.setMotors(-0.3f, -0.3f, 0.3f, 0.3f, 1);
+            robot.setMotors(-0.25f, -0.25f, 0.25f, 0.25f, 1);
         }
         // When the arm driver isn't overriding base controls, this code controls the motor
         else {
@@ -177,10 +178,9 @@ public class HeadlessOp extends OpMode {
 
         // Apply power to slide motors and gripper
         slides.manualHeightControl(Math.pow(controller2.left_stick_y, 3.0));
-        slides.manualExtensionControl(Math.pow(controller2.right_stick_x, 3.0));
+        slides.manualExtensionControl(Math.pow(controller2.right_stick_y, 3.0));
         slides.setGrip(grip);
 
-        /* TODO: Currently destroys the robot, fix it
         if (controller2.dpadUpOnce()) {
             slides.goToJunction(Slide.heights.HIGH);
         } else if (controller2.dpadRightOnce()) {
@@ -188,6 +188,5 @@ public class HeadlessOp extends OpMode {
         } else if (controller2.dpadDownOnce()) {
             slides.goToJunction(Slide.heights.LOW);
         }
-         */
     }
 }

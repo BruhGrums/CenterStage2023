@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.helpers;
 
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,8 +22,10 @@ public class Slide {
     private boolean inProgress = false;
 
     private final int maxVel = 2800;
-    private final int maxHeight = 4200, minHeight = 0;
+    private final int maxHeight = 4400, minHeight = 0;
     private final int maxExt = 2200, minExt = 0;
+
+    private int targetPos;
 
     public enum heights {
         LOW,
@@ -61,10 +64,19 @@ public class Slide {
         setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, slideTop);
     }
 
+    private void setBrakeMode(DcMotor.ZeroPowerBehavior mode, DcMotorEx... motors) {
+        for (DcMotorEx motor: motors) {
+            motor.setZeroPowerBehavior(mode);
+        }
+    }
+
+    public void runSlidesWithBrakes() {
+        setBrakeMode(DcMotor.ZeroPowerBehavior.BRAKE, slideLeft, slideRight, slideTop);
+    }
+
     // Bundles all the functions needed to initialize the arm controls
-    public void initArm(Telemetry _telemetry) {
+    public void initArm() {
         stopAndResetMotors();
-        _telemetry.addData("toppos", slideTop.getCurrentPosition());
         setGrip(false);
         setSlideVelocity(0, slideLeft, slideRight, slideTop);
         setHeight(0);
@@ -75,11 +87,15 @@ public class Slide {
     public void setHeight(int height) {
         slideLeft.setTargetPosition(height);
         slideRight.setTargetPosition(-height);
+        telemetry.addData("leftpos", slideLeft.getCurrentPosition());
+        telemetry.addData("lefttarg", slideLeft.getTargetPosition());
+        telemetry.addData("rightpos", slideRight.getCurrentPosition());
+        telemetry.addData("righttart", slideRight.getTargetPosition());
     }
 
     // Set the target encoders position of the horizontal slide
     public void setExtension(int ext) {
-        slideTop.setTargetPosition(-ext);
+        slideTop.setTargetPosition(ext);
     }
 
     // Iterate over a list of motors and set them to a provided velocity in ticks/second
@@ -105,12 +121,12 @@ public class Slide {
 
     public void manualHeightControl(double velScale) {
         // TODO: see if setting int.max and int.min is better
-        if (velScale > 0.1) {
-            setHeight(maxHeight);
+        if (velScale > 0.0) {
+            setHeight(Integer.MAX_VALUE);
             setSlideVelocity(maxVel * velScale, slideLeft, slideRight);
             inProgress = false;
-        } else if (velScale < -0.1) {
-            setHeight(minHeight);
+        } else if (velScale < 0.0) {
+            setHeight(Integer.MIN_VALUE);
             setSlideVelocity(maxVel * velScale, slideLeft, slideRight);
             inProgress = false;
         } else if (!inProgress) {
@@ -120,13 +136,11 @@ public class Slide {
 
     public void manualExtensionControl(double velScale) {
         if (velScale > 0.1) {
-            setHeight(maxExt);
+            setExtension(Integer.MAX_VALUE);
             setSlideVelocity(maxVel * velScale, slideTop);
-            inProgress = false;
         } else if (velScale < -0.1) {
-            setHeight(minExt);
-            setSlideVelocity(-1 * maxVel * velScale, slideTop);
-            inProgress = false;
+            setExtension(Integer.MIN_VALUE);
+            setSlideVelocity(maxVel * velScale, slideTop);
         } else {
             setSlideVelocity(0, slideTop);
         }
@@ -144,7 +158,7 @@ public class Slide {
                 setHeight(4200);
                 break;
         }
-        setSlideVelocity(maxVel, slideLeft, slideRight);
+        setSlideVelocity(-1 * maxVel, slideLeft, slideRight);
         inProgress = true;
     }
 }

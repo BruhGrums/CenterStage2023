@@ -30,6 +30,8 @@ public class linearHeadlessOp extends LinearOpMode {
         robot.runWithoutEncoders();
         robot.runWithBrakes();
 
+        slides.runSlidesWithBrakes();
+
         while (opModeInInit()) {
             controller1.update();
             controller2.update();
@@ -65,11 +67,11 @@ public class linearHeadlessOp extends LinearOpMode {
                 multiplier = multiplier == driveMultiplier ? adjustMultiplier : driveMultiplier;
             }
 
-            if (controller2.leftTriggerOnce()) {
+            if (controller2.leftBumperOnce()) {
                 grip = false;
             }
 
-            if (controller2.rightTriggerOnce()) {
+            if (controller2.rightBumperOnce()) {
                 grip = true;
             }
 
@@ -79,7 +81,7 @@ public class linearHeadlessOp extends LinearOpMode {
 
             final double x = -Math.pow(controller1.left_stick_x, 3.0);
             final double y = Math.pow(controller1.left_stick_y, 3.0);
-            final double rot = Math.pow(controller1.right_trigger - controller1.left_trigger, 3.0);
+            double rot = Math.pow(controller1.right_trigger - controller1.left_trigger, 3.0);
 
             final double direction = Math.atan2(x, y) + (headlessMode ? robot.getHeading() : 0.0);
             final double magnitude = Math.min(1.0, Math.sqrt(x * x + y * y));
@@ -87,21 +89,27 @@ public class linearHeadlessOp extends LinearOpMode {
             double y_proc = -1 * magnitude * Math.sin(direction + Math.PI / 2.0);
             double x_proc = magnitude * Math.cos(direction + Math.PI / 2.0);
 
+
+            final double driver2speed = 1.0;
             if (controller2.Triangle()) {
-                y_proc = 0.75;
+                y_proc = driver2speed;
                 x_proc = 0.0;
             }
             if (controller2.Square()) {
                 y_proc = 0.0;
-                x_proc = -0.75;
+                x_proc = -driver2speed;
             }
             if (controller2.Cross()) {
-                y_proc = -0.75;
+                y_proc = -driver2speed;
                 x_proc = 0.0;
             }
             if (controller2.Circle()) {
                 y_proc = 0.0;
-                x_proc = 0.75;
+                x_proc = driver2speed;
+            }
+
+            if (controller2.right_trigger - controller2.left_trigger != 0) {
+                rot = Math.pow(controller2.right_trigger - controller2.left_trigger, 3.0) * 0.65;
             }
 
             final double leftFront = y_proc + x_proc + rot;
@@ -118,10 +126,9 @@ public class linearHeadlessOp extends LinearOpMode {
 
             // Apply power to slide motors and gripper
             slides.manualHeightControl(Math.pow(controller2.left_stick_y, 3.0));
-            slides.manualExtensionControl(Math.pow(controller2.right_stick_x, 3.0));
+            slides.manualExtensionControl(Math.pow(controller2.right_stick_y, 3.0));
             slides.setGrip(grip);
 
-            /* TODO: Currently destroys the robot, fix it
             if (controller2.dpadUpOnce()) {
                 slides.goToJunction(Slide.heights.HIGH);
             } else if (controller2.dpadRightOnce()) {
@@ -129,7 +136,6 @@ public class linearHeadlessOp extends LinearOpMode {
             } else if (controller2.dpadDownOnce()) {
                 slides.goToJunction(Slide.heights.LOW);
             }
-            */
         }
     }
 }

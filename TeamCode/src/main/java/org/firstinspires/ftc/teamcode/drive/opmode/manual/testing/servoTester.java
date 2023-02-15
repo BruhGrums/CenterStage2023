@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
 
-@Disabled
 @TeleOp(name = "servo tester", group = "testing")
 public class servoTester extends LinearOpMode {
     private Controller controller1;

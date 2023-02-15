@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Disabled
+//@Disabled
 @TeleOp(name = "DEPRECATED, DOES NOT WORK - Manual Op")
 public class ManualOp extends OpMode {
     DcMotor leftFront;
@@ -16,7 +16,7 @@ public class ManualOp extends OpMode {
     DcMotor slideLeft;
     DcMotor slideRight;
     DcMotor slideTop;
-    Servo gripServo;
+    //Servo gripServo;
 
 
     public void init() {
@@ -27,9 +27,9 @@ public class ManualOp extends OpMode {
         slideLeft = hardwareMap.dcMotor.get("slideLeft");
         slideRight = hardwareMap.dcMotor.get("slideRight");
         slideTop = hardwareMap.dcMotor.get("slideTop");
-        gripServo = hardwareMap.servo.get("gripServo");
+        //gripServo = hardwareMap.servo.get("gripServo");
 
-        gripServo.setPosition(0.5);
+        //gripServo.setPosition(0.5);
 
     }
 
@@ -56,7 +56,7 @@ public class ManualOp extends OpMode {
         telemetry.addData("servo speed: ", servoSpeed);
         telemetry.update();
 
-        gripServo.setPosition(servoSpeed);
+        //gripServo.setPosition(servoSpeed);
 
     }
 }
