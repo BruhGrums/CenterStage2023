@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Slide {
 
@@ -19,7 +20,7 @@ public class Slide {
 
     private boolean inProgress = false;
 
-    private final int maxVel = 4000;
+    private final int maxVel = 2800;
     private final int maxHeight = 4200, minHeight = 0;
     private final int maxExt = 2200, minExt = 0;
 
@@ -38,7 +39,9 @@ public class Slide {
         slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
 
         leftGripServo = hardwareMap.servo.get("leftGripServo");
-        rightGripServo = hardwareMap.servo.get("rightGripServ0");
+        rightGripServo = hardwareMap.servo.get("rightGripServo");
+
+        slideLeft.setDirection(DcMotorEx.Direction.REVERSE);
     }
 
     private void setMotorMode(DcMotorEx.RunMode mode, DcMotorEx... motors) {
@@ -101,29 +104,30 @@ public class Slide {
     }
 
     public void manualHeightControl(double velScale) {
-        if (velScale > 0) {
+        // TODO: see if setting int.max and int.min is better
+        if (velScale > 0.1) {
             setHeight(maxHeight);
             setSlideVelocity(maxVel * velScale, slideLeft, slideRight);
             inProgress = false;
-        } else if (velScale < 0) {
+        } else if (velScale < -0.1) {
             setHeight(minHeight);
             setSlideVelocity(maxVel * velScale, slideLeft, slideRight);
             inProgress = false;
-        } else if (velScale == 0 && !inProgress) {
+        } else if (!inProgress) {
             setSlideVelocity(0, slideLeft, slideRight);
         }
     }
 
     public void manualExtensionControl(double velScale) {
-        if (velScale > 0) {
+        if (velScale > 0.1) {
             setHeight(maxExt);
             setSlideVelocity(maxVel * velScale, slideTop);
             inProgress = false;
-        } else if (velScale < 0) {
+        } else if (velScale < -0.1) {
             setHeight(minExt);
-            setSlideVelocity(maxVel * velScale, slideTop);
+            setSlideVelocity(-1 * maxVel * velScale, slideTop);
             inProgress = false;
-        } else if (velScale == 0) {
+        } else {
             setSlideVelocity(0, slideTop);
         }
     }
@@ -141,5 +145,6 @@ public class Slide {
                 break;
         }
         setSlideVelocity(maxVel, slideLeft, slideRight);
+        inProgress = true;
     }
 }

@@ -6,11 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
+import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
 
 @TeleOp(name = "Manual Op")
 public class NewManualOp extends OpMode {
     // Create new robot and controller objects from the classes we defined
     private Robot robot;
+    private Slide slides;
     private Controller controller1, controller2;
 
     // Set up some useful variables
@@ -23,7 +25,6 @@ public class NewManualOp extends OpMode {
         // Basic setup
         robot = new Robot(hardwareMap, telemetry);
         robot.runUsingEncoders();
-        robot.runSlideWithoutEncoders();
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
     }
@@ -91,7 +92,8 @@ public class NewManualOp extends OpMode {
         final double slideTop = Math.pow(controller2.right_stick_y, 3.0);
         final boolean gripPower = grip;
 
-        robot.setSlideMotors(slideLeft, slideRight, slideTop);
-        robot.setGrip(gripPower);
+        slides.manualHeightControl(slideLeft);
+        slides.manualExtensionControl(slideTop);
+        slides.setGrip(grip);
     }
 }

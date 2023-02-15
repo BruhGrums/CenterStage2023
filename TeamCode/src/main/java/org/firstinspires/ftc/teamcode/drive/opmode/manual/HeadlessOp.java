@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
  * becomes relative to the field as opposed to the robot. You can
  * reset the forward heading by pressing "square".
  */
-@TeleOp(name = "HeadlessOp")
+@TeleOp(name = "HeadlessOp", group = "competition")
 public class HeadlessOp extends OpMode {
 
     // Create new Robot object named robot
@@ -127,25 +127,6 @@ public class HeadlessOp extends OpMode {
                         0.75f, 1);
             }
         }
-        else if (controller2.dpadDown() || controller2.dpadUp() ||
-                controller2.dpadLeft() || controller2.dpadRight()) {
-            if (controller2.dpadUp()) {
-                robot.setMotors(0.1f, 0.1f, 0.1f,
-                        0.1f, 1);
-            }
-            if (controller2.dpadDown()) {
-                robot.setMotors(-0.1f, -0.1f, -0.1f,
-                        -0.1f, 1);
-            }
-            if (controller2.dpadLeft()) {
-                robot.setMotors(-0.1f, 0.1f, 0.1f,
-                        -0.1f, 1);
-            }
-            if (controller2.dpadRight()) {
-                robot.setMotors(0.1f, -0.1f, -0.1f,
-                        0.11f, 1);
-            }
-        }
         else if (controller2.rightBumper()) {
             robot.setMotors(0.25, 0.25, -0.25, -0.25, 1);
         }
@@ -199,5 +180,14 @@ public class HeadlessOp extends OpMode {
         slides.manualExtensionControl(Math.pow(controller2.right_stick_x, 3.0));
         slides.setGrip(grip);
 
+        /* TODO: Currently destroys the robot, fix it
+        if (controller2.dpadUpOnce()) {
+            slides.goToJunction(Slide.heights.HIGH);
+        } else if (controller2.dpadRightOnce()) {
+            slides.goToJunction(Slide.heights.MID);
+        } else if (controller2.dpadDownOnce()) {
+            slides.goToJunction(Slide.heights.LOW);
+        }
+         */
     }
 }
