@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
+import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
 
 /**
  * Mecanum teleop (with an optional headless mode)
@@ -19,6 +20,7 @@ public class HeadlessOp extends OpMode {
 
     // Create new Robot object named robot
     private Robot robot;
+    private Slide slides;
     // Create two new Controller objects, one for each gamepad
     private Controller controller1, controller2;
 
@@ -35,8 +37,8 @@ public class HeadlessOp extends OpMode {
     public void init() {
         // Basic setup
         robot = new Robot(hardwareMap, telemetry);  // Initialize our robot class
+        slides = new Slide(hardwareMap, telemetry);
         robot.runWithoutEncoders();                   // Tell our drive motors to use encoders
-        robot.runSlideWithoutEncoders();            // Tell our slide motors not to use encoders
         controller1 = new Controller(gamepad1);     // Initialize controller1
         controller2 = new Controller(gamepad2);     // Initialize controller2
 
@@ -193,8 +195,9 @@ public class HeadlessOp extends OpMode {
         final boolean gripPower = grip;
 
         // Apply power to slide motors and gripper
-        robot.setSlideMotors(slideLeft, slideRight, slideTop);
-        robot.setGrip(gripPower);
+        slides.manualHeightControl(Math.pow(controller2.left_stick_y, 3.0));
+        slides.manualExtensionControl(Math.pow(controller2.right_stick_x, 3.0));
+        slides.setGrip(grip);
 
     }
 }
