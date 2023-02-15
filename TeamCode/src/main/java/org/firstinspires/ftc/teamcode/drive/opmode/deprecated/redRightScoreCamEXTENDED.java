@@ -101,7 +101,7 @@ public class redRightScoreCamEXTENDED extends LinearOpMode {
         // Adjust our angle so that we are lined up with the pole
         adjustAngle(drive);
 
-        // Increase the slide height to high junction height and increase its velocity //TODO:
+        // Increase the slide height to high junction height and increase its velocity
         drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
         drive.setHeight(4200);
         // Wait until the slides are high enough that we won't hit the pole when extending
