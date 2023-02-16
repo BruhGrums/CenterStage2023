@@ -168,13 +168,13 @@ public class blueRightScore extends LinearOpMode {
                 .addTemporalMarker(1, () -> {
                     _drive.setExtension(1850);
                 })
-                .turn(Math.toRadians(-149), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(-151), Math.toRadians(120), Math.toRadians(90))
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
 
         // claw moves out to grab a cone from the stack
-        _drive.setExtension(2200);
+        _drive.setExtension(2150);
 
         //we wait because if we dont then the claw closes before we can grip a cone
         sleep(750);
@@ -186,7 +186,7 @@ public class blueRightScore extends LinearOpMode {
         _drive.setHeight(4100);
         sleep(350);
         //pull back before we turn
-        _drive.setExtension(750);
+        _drive.setExtension(625);
     }
 
     private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
@@ -194,7 +194,7 @@ public class blueRightScore extends LinearOpMode {
         //trajectory to turn to target junction
         _drive.updatePoseEstimate();
         TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(144), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(146), Math.toRadians(120), Math.toRadians(90))
                 .build();
 // just set the height of the claw
         _drive.setHeight(4100);
@@ -202,7 +202,7 @@ public class blueRightScore extends LinearOpMode {
         _drive.followTrajectorySequence(reposition);
 
         // we push out our arm
-        _drive.setExtension(750);
+        _drive.setExtension(625);
 
         // Wait for wiggles to stop just in case
         sleep(250);
