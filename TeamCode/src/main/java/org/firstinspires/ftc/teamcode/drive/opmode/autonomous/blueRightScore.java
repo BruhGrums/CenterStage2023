@@ -183,7 +183,7 @@ public class blueRightScore extends LinearOpMode {
         sleep(450);
         //this is us now lifting the cone
 
-        _drive.setHeight(4100);
+        _drive.setHeight(4150);
         sleep(350);
         //pull back before we turn
         _drive.setExtension(750);
