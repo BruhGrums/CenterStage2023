@@ -163,7 +163,7 @@ public class blueRightScore extends LinearOpMode {
         _drive.updatePoseEstimate();
         TrajectorySequence turnToStack = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
                 .addTemporalMarker(0.5, () -> {
-                    _drive.setHeight(120 + (stackHeight * 145));
+                    _drive.setHeight(50 + (stackHeight * 145));
                 })
                 .addTemporalMarker(1.75, () -> {
                     _drive.setExtension(1850);
@@ -197,7 +197,7 @@ public class blueRightScore extends LinearOpMode {
                 .turn(Math.toRadians(144), Math.toRadians(120), Math.toRadians(90))
                 .build();
 // just set the height of the claw
-        _drive.setHeight(4100);
+        _drive.setHeight(4300);
 //we start to turn
         _drive.followTrajectorySequence(reposition);
 

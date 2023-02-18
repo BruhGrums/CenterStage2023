@@ -197,7 +197,7 @@ public class redRightScore extends LinearOpMode {
                 .turn(Math.toRadians(146), Math.toRadians(120), Math.toRadians(90))
                 .build();
 // just set the height of the claw
-        _drive.setHeight(4100);
+        _drive.setHeight(4300);
 //we start to turn
         _drive.followTrajectorySequence(reposition);
 
