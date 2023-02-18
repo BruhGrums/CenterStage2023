@@ -165,7 +165,7 @@ public class blueRightScore extends LinearOpMode {
                 .addTemporalMarker(0.5, () -> {
                     _drive.setHeight(120 + (stackHeight * 145));
                 })
-                .addTemporalMarker(1, () -> {
+                .addTemporalMarker(1.75, () -> {
                     _drive.setExtension(1850);
                 })
                 .turn(Math.toRadians(-149), Math.toRadians(120), Math.toRadians(90))
