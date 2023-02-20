@@ -1,30 +1,24 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.vision.poleFinder;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.parkingZoneFinder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
-@Autonomous(name = "Red Right Score")   //Telemtry allows us in the driver hub quickly chose which program to run
-public class redRightScore extends LinearOpMode {
+@Autonomous(name = "Precise Red Right Score")   //Telemetry allows us in the driver hub quickly chose which program to run
+public class redRightScorePrecise extends LinearOpMode {
 //extends linearOpMode allows us to call functions from other helper classes
     private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
     // later be called in our first trajectories
@@ -163,13 +157,12 @@ public class redRightScore extends LinearOpMode {
         _drive.updatePoseEstimate();
         TrajectorySequence turnToStack = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
                 .addTemporalMarker(0.5, () -> {
-                    _drive.setHeight(120 + (stackHeight * 145));
+                    _drive.setHeight(50 + (stackHeight * 145));
                 })
                 .addTemporalMarker(1.75, () -> {
                     _drive.setExtension(1850);
                 })
-                //was -156
-                .turn(Math.toRadians(-156), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(-154), Math.toRadians(120), Math.toRadians(90))
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
@@ -187,31 +180,30 @@ public class redRightScore extends LinearOpMode {
         _drive.setHeight(4150);
         sleep(350);
         //pull back before we turn
-        _drive.setExtension(675);
+        _drive.setExtension(200);
     }
 
     private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
 
         //trajectory to turn to target junction
         _drive.updatePoseEstimate();
-        //was 152
         TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(152), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(146), Math.toRadians(120), Math.toRadians(90))
                 .build();
 // just set the height of the claw
-        _drive.setHeight(4200);
+        _drive.setHeight(4100);
 //we start to turn
         _drive.followTrajectorySequence(reposition);
 
         // we push out our arm 
-        _drive.setExtension(675);
+        _drive.setExtension(800);
 
         // Wait for wiggles to stop just in case
-        sleep(250);
+        sleep(500);
 
         // Open grip to drop cone
         _drive.setGrip(false);
-        sleep(250);
+        sleep(500);
     }
 
     // This code parks our robot using a list of locations and zones. If you were to use encoders

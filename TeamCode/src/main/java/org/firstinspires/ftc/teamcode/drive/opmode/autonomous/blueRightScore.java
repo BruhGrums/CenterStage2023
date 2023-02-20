@@ -197,12 +197,12 @@ public class blueRightScore extends LinearOpMode {
                 .turn(Math.toRadians(144), Math.toRadians(120), Math.toRadians(90))
                 .build();
 // just set the height of the claw
-        _drive.setHeight(4300);
+        _drive.setHeight(4200);
 //we start to turn
         _drive.followTrajectorySequence(reposition);
 
         // we push out our arm
-        _drive.setExtension(750);
+        _drive.setExtension(675);
 
         // Wait for wiggles to stop just in case
         sleep(250);
