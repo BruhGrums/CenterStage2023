@@ -1,40 +1,35 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.opmode.vision.poleFinder;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.parkingZoneFinder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
-@Autonomous(name = "Red Right Score")   //Telemtry allows us in the driver hub quickly chose which program to run
-public class redRightScore extends LinearOpMode {
+@Autonomous(name = "Red Right Score w/ Splines")   //Telemtry allows us in the driver hub quickly chose which program to run
+public class redRightScoreSplineTime extends LinearOpMode {
 //extends linearOpMode allows us to call functions from other helper classes
     private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
     // later be called in our first trajectories
 
     //score pose is the x and y that our IMU tries to go too and the engocders goathers position data. The heading should looking at the nearest high junction
-    private final Pose2d scorePose = new Pose2d(40, -11, Math.toRadians(141));
 
     // stack pose is what we point to when calling in our function so that we dont have to constantly put the same code in different trajectories. Stack pose
     // just slightly changes the postion of the robot while mainly just being a turn the change is y is for allowing the trjectory to build properly
-    private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
+    private final Pose2d preloadPose = new Pose2d(40, -11, Math.toRadians(141));
+    private final Pose2d cyclePose = new Pose2d(38, -16, Math.toRadians(-30));
+    private final Pose2d grabPose = new Pose2d(48, -12, Math.toRadians(0));
 // restrictions both in m/s
     private final double travelSpeed = 45.0, travelAccel = 30.0;
 // the three different parking locations in poses
@@ -57,7 +52,7 @@ public class redRightScore extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);  // maps our moters to the robot
 
         // Initialize arm
-        drive.initArm();
+        drive.initArm(telemetry);
 
         // Tell the robot where it is based on a pose created earlier
         drive.setPoseEstimate(startPose);
@@ -65,7 +60,7 @@ public class redRightScore extends LinearOpMode {
         // Create the first trajectory to be run when the round starts
 // this is a trajectory we are telling the robot when goToStack is called to go from our stack pose to the score pose in a spline that looks like an s
         TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(scorePose,
+                .lineToSplineHeading(preloadPose,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -101,7 +96,7 @@ public class redRightScore extends LinearOpMode {
         adjustCamera.stopStreaming();
         adjustCamera.closeCameraDevice();
 
-        drive.setSlideVelocity(4000, drive.slideRight, drive.slideLeft, drive.slideTop);
+        drive.setSlideVelocity(0, drive.slideRight, drive.slideLeft, drive.slideTop);
 
         // Close the grip and move the slide up a small amount
         drive.setGrip(true);
@@ -169,7 +164,7 @@ public class redRightScore extends LinearOpMode {
                     _drive.setExtension(1850);
                 })
                 //was -156
-                .turn(Math.toRadians(-156), Math.toRadians(120), Math.toRadians(90))
+                .splineToSplineHeading(grabPose, Math.toRadians(0))
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
@@ -195,8 +190,8 @@ public class redRightScore extends LinearOpMode {
         //trajectory to turn to target junction
         _drive.updatePoseEstimate();
         //was 152
-        TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(152), Math.toRadians(120), Math.toRadians(90))
+        TrajectorySequence reposition = _drive.trajectorySequenceBuilder(grabPose)
+                .splineToSplineHeading(cyclePose, Math.toRadians(90))
                 .build();
 // just set the height of the claw
         _drive.setHeight(4200);
