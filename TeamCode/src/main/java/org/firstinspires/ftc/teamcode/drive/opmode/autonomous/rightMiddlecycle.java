@@ -131,8 +131,9 @@ public class rightMiddlecycle extends LinearOpMode {
 
         toStack(drive,5);
         for (int i = 4; i > 2; i--) {
-            toStack1(drive, i);
+
             toM(drive);
+            toStack1(drive,i);
         }
 
 
@@ -195,7 +196,7 @@ public class rightMiddlecycle extends LinearOpMode {
         // we have to do _drive because if we just did drive we would run into a localization error.
 
         // this is after we drop we pull in the claw
-        _drive.setExtension(500);
+        _drive.setExtension(300);
 
         // we wait for the claw to be pulled back becuase if we dont we would tunr and pull the junction this is also to reduce our radius which reduces
         // our roational intertia this is a principle tought in phyics classes higher the rotational inertia the harder it is to turn and to stop turning
@@ -207,9 +208,6 @@ public class rightMiddlecycle extends LinearOpMode {
         TrajectorySequence turnToStack = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
                 .addTemporalMarker(0.5, () -> {
                     _drive.setHeight(120 + (stackHeight * 145));
-                })
-                .addTemporalMarker(1, () -> {
-                    _drive.setExtension(1850);
                 })
                 .turn(Math.toRadians(154), Math.toRadians(120), Math.toRadians(90))
                 .build();
