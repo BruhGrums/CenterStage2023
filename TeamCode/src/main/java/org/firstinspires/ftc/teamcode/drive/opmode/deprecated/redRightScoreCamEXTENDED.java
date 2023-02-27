@@ -41,7 +41,7 @@ public class redRightScoreCamEXTENDED extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
 
         // Initialize arm
-        drive.initArm(telemetry);
+        drive.initArm();
 
         // Tell the robot where it is based on a pose created earlier
         drive.setPoseEstimate(startPose);
