@@ -18,7 +18,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
-@Autonomous (name = "Middle cycle test", group = "competition")
+@Autonomous (name = "high cycle test", group = "competition")
 public class rightMiddlecycle extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
     // later be called in our first trajectories
