@@ -28,11 +28,13 @@ public class Robot {
 
     // Create motor objects
     private final DcMotor leftFront, leftRear, rightFront, rightRear;
+    private final DcMotor slideLeft, slideRight, slideTop;
 
     // Create IMU object
     private final BNO055IMU imu;
 
     // Create servo objects
+    private final Servo leftGripServo, rightGripServo;
 
     // Create variables for headless operation
     private double headingOffset = 0.0;  // Allows headless mode to correct for rotation
@@ -73,6 +75,24 @@ public class Robot {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         // Initialize our IMU using the parameters we just set
         imu.initialize(parameters);
+
+        // Ask the Driver Hub which port each slide motor is attached to based on robot config
+        slideLeft = hardwareMap.dcMotor.get("slideLeft");
+        slideRight = hardwareMap.dcMotor.get("slideRight");
+        slideTop = hardwareMap.dcMotor.get("slideTop");
+
+        // Reverse one slide motor. This must be done since we are using a mirrored Viper slide and
+        // the motors will fight if one is not reversed
+        slideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // Tell the slide motors to brake whenever we don't give any input
+        // This helps hold the slide still and reduce the workload on the arm driver
+        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Ask the Driver Hub which port each servo is attached to based on robot config
+        leftGripServo = hardwareMap.servo.get("leftGripServo");
+        rightGripServo = hardwareMap.servo.get("rightGripServo");
     }
 
     // This function is used to update the RunMode of multiples DcMotors at once
@@ -92,6 +112,16 @@ public class Robot {
     // Invoke setMotorMode() to turn off encoders
     public void runWithoutEncoders() {
         setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER, leftFront, leftRear, rightFront, rightRear);
+    }
+
+    // Invoke setMotorMode() to turn on slide encoders
+    public void runSlideUsingEncoders() {
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER, slideLeft, slideRight);
+    }
+
+    // Invoke setMotorMode() to turn off slide encoders
+    public void runSlideWithoutEncoders() {
+        setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER, slideLeft, slideRight);
     }
 
     // This function is used to update the ZeroPowerBehavior of multiples DcMotors at once
@@ -155,7 +185,7 @@ public class Robot {
         double ret = Double.MIN_VALUE;  // We set our return value to the minimum possible Double
         for (double x : xs) {           // Next we iterate over every Double in the list
             if (Math.abs(x) > ret) {    // If the absolute value of the current Double is greater
-                                        // than our return variable...
+                // than our return variable...
                 ret = Math.abs(x);      // ...we set our return variable equal to the current Double
             }
         }
@@ -181,5 +211,33 @@ public class Robot {
         leftRear.setPower((_leftRear * multiplier) / scale);
         rightFront.setPower((_rightFront * multiplier) / scale);
         rightRear.setPower((_rightRear * multiplier) / scale);
+    }
+
+    // Provide a convenient way to set all the slide motors from a single function
+    public void setSlideMotors(double _slideLeft, double _slideRight, double _slideTop) {
+        slideLeft.setPower(_slideLeft);
+        slideRight.setPower(_slideRight);
+        slideTop.setPower(_slideTop);
+    }
+
+    // This functions opens and closes our gripper based on a boolean value
+    public void setGrip(boolean grip) {
+        // Hardcode our opened and closed servo positions (in degrees)
+        double leftOpen = 0.0, leftClosed = 105.0;
+        double rightOpen = 270.0, rightClosed = 175.0;
+
+        /*
+            Dividing by 270 is required to properly set the Servo positions
+            The servos require a value from 0 to 1 to set their position,
+            and our particular servos have a range of 270°
+            Dividing by 270 converts our degrees to a value from 0 to 1
+         */
+        if (grip) {
+            leftGripServo.setPosition(leftClosed / 270);
+            rightGripServo.setPosition(rightClosed / 270);
+        } else if (!grip) {
+            leftGripServo.setPosition(leftOpen / 270);
+            rightGripServo.setPosition(rightOpen / 270);
+        }
     }
 }

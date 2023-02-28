@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
-import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
+import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
+import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
 
 /**
  * Mecanum teleop (with an optional headless mode)
@@ -15,12 +16,11 @@ import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
  * becomes relative to the field as opposed to the robot. You can
  * reset the forward heading by pressing "square".
  */
-@TeleOp(name = "HeadlessOp", group = "competition")
+@TeleOp(name = "HeadlessOp")
 public class HeadlessOp extends OpMode {
 
     // Create new Robot object named robot
     private Robot robot;
-    private Slide slides;
     // Create two new Controller objects, one for each gamepad
     private Controller controller1, controller2;
 
@@ -37,13 +37,12 @@ public class HeadlessOp extends OpMode {
     public void init() {
         // Basic setup
         robot = new Robot(hardwareMap, telemetry);  // Initialize our robot class
-        slides = new Slide(hardwareMap, telemetry);
         robot.runWithoutEncoders();                   // Tell our drive motors to use encoders
+        robot.runSlideWithoutEncoders();            // Tell our slide motors not to use encoders
         controller1 = new Controller(gamepad1);     // Initialize controller1
         controller2 = new Controller(gamepad2);     // Initialize controller2
 
         robot.runWithBrakes();  // Tell our driv motors to use brakes
-        slides.runSlidesWithBrakes();
     }
 
     // This code will after the init block and will loop until the start button is pressed
@@ -128,11 +127,30 @@ public class HeadlessOp extends OpMode {
                         0.75f, 1);
             }
         }
+        else if (controller2.dpadDown() || controller2.dpadUp() ||
+                controller2.dpadLeft() || controller2.dpadRight()) {
+            if (controller2.dpadUp()) {
+                robot.setMotors(0.1f, 0.1f, 0.1f,
+                        0.1f, 1);
+            }
+            if (controller2.dpadDown()) {
+                robot.setMotors(-0.1f, -0.1f, -0.1f,
+                        -0.1f, 1);
+            }
+            if (controller2.dpadLeft()) {
+                robot.setMotors(-0.1f, 0.1f, 0.1f,
+                        -0.1f, 1);
+            }
+            if (controller2.dpadRight()) {
+                robot.setMotors(0.1f, -0.1f, -0.1f,
+                        0.11f, 1);
+            }
+        }
         else if (controller2.rightBumper()) {
             robot.setMotors(0.25, 0.25, -0.25, -0.25, 1);
         }
         else if (controller2.leftBumper()) {
-            robot.setMotors(-0.25f, -0.25f, 0.25f, 0.25f, 1);
+            robot.setMotors(-0.3f, -0.3f, 0.3f, 0.3f, 1);
         }
         // When the arm driver isn't overriding base controls, this code controls the motor
         else {
@@ -177,16 +195,8 @@ public class HeadlessOp extends OpMode {
         final boolean gripPower = grip;
 
         // Apply power to slide motors and gripper
-        slides.manualHeightControl(Math.pow(controller2.left_stick_y, 3.0));
-        slides.manualExtensionControl(Math.pow(controller2.right_stick_y, 3.0));
-        slides.setGrip(grip);
+        robot.setSlideMotors(slideLeft, slideRight, slideTop);
+        robot.setGrip(gripPower);
 
-        if (controller2.dpadUpOnce()) {
-            slides.goToJunction(Slide.heights.HIGH);
-        } else if (controller2.dpadRightOnce()) {
-            slides.goToJunction(Slide.heights.MID);
-        } else if (controller2.dpadDownOnce()) {
-            slides.goToJunction(Slide.heights.LOW);
-        }
     }
 }
