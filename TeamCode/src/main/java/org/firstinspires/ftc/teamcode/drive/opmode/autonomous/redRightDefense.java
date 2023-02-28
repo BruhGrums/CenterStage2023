@@ -64,7 +64,7 @@ public class redRightDefense extends LinearOpMode {
                 .splineTo(new Vector2d(35, -23), Math.toRadians(110),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
-                .splineTo(new Vector2d(230, -12), Math.toRadians(120),
+                .splineTo(new Vector2d(30, -12), Math.toRadians(120),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
