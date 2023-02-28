@@ -24,19 +24,21 @@ public class Revamp extends LinearOpMode {
     // later be called in our first trajectories
 
     //score pose is the x and y that our IMU tries to go too and the engocders goathers position data. The heading should looking at the nearest high junction
-    private final Pose2d scorePose = new Pose2d(37, -11, Math.toRadians(145));
+    private final Pose2d highJun = new Pose2d(37, -11, Math.toRadians(145));
 
     // stack pose is what we point to when calling in our function so that we dont have to constantly put the same code in different trajectories. Stack pose
     // just slightly changes the postion of the robot while mainly just being a turn the change is y is for allowing the trjectory to build properly
-    private final Pose2d stackPose = new Pose2d(48, -13, Math.toRadians(356));
+    private final Pose2d stackPose = new Pose2d(48, -13, Math.toRadians(-5));
     // restrictions both in m/s
 
-    private final Pose2d smalljun = new Pose2d(37, -11, Math.toRadians(356));
+    private final Pose2d smalljun = new Pose2d(37, -13, Math.toRadians(280));
 
-    private final Pose2d medjun1=new Pose2d(13,-11, Math.toRadians(356));
+   // private final Pose2d medjun1=new Pose2d(1,-11, Math.toRadians(290));
 
     private final Pose2d medjun2= new Pose2d(38,-13, Math.toRadians(220));
-    private final double travelSpeed = 45.0, travelAccel = 30.0;
+
+    //orgianl 45 , 30
+    private final double travelSpeed = 15.0, travelAccel = 15.0;
     // the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
             -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
@@ -66,7 +68,7 @@ public class Revamp extends LinearOpMode {
         // Create the first trajectory to be run when the round starts
 // this is a trajectory we are telling the robot when goToStack is called to go from our stack pose to the score pose in a spline that looks like an s
         TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(scorePose,
+                .lineToSplineHeading(highJun,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -120,11 +122,20 @@ public class Revamp extends LinearOpMode {
 
         drive.followTrajectorySequence(goToStack);
 
+        TrajectorySequence tostack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(stackPose,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
+
+
         // Without waiting, run the trajectory we prepared earlier
         // This will take us to our cycle location
 
         // Update roadrunner's idea of where the robot is after we ran the trajectory
-        drive.updatePoseEstimate();
+
         // Wait for arm to be in position
         sleep(250);
 
@@ -134,40 +145,71 @@ public class Revamp extends LinearOpMode {
         // Wait for grip to fully open and cone to drop
         sleep(500);
 
-        TrajectorySequence tostack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(stackPose,
-                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-        )
-                .build();
 
 
+        //to stack is right
         drive.followTrajectorySequence(tostack);
-        drive.updatePoseEstimate();
         drive.setHeight(845);
         sleep(2000);
         drive.setGrip(true);
-        sleep(2000);
-        drive.setHeight(1500);
-        sleep(500);
+        //TODO THIS IS THE END OF THE FIRST CYCLE
 
-        TrajectorySequence toSMALL = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(smalljun,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
+        for(int i = 5; i>1;i--){
+            if (i>3)
+            {
+                scoresmall(drive);
+            }
+            else
+            {
+                scoremed (drive);
+            }
+
+        }
+        if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
+        else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
+        else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
+        else { parkBot(drive, 1, parkingSpots); }
 
 
 
-        drive.followTrajectorySequence(toSMALL);
-        drive.setGrip(false);
-        drive.setHeight(1500);
+
+        //grab the 5th cone of the stack
+
+        /*
         drive.updatePoseEstimate();
-        drive.followTrajectorySequence(tostack);
-        drive.updatePoseEstimate();
+
+        for(int i=0;i>2;i++) {
+            TrajectorySequence toSMALL = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineToSplineHeading(smalljun,
+                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                    )
+                    .build();
+
+
+            drive.updatePoseEstimate();
+            drive.followTrajectorySequence(toSMALL);
+            drive.updatePoseEstimate();
+            TrajectorySequence tostack2 = drive.trajectorySequenceBuilder(smalljun)
+                    .lineToLinearHeading(stackPose,
+                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                    )
+                    .build();
+
+            drive.setGrip(false);
+            drive.setHeight(1500);
+            sleep(2000);
+
+            drive.updatePoseEstimate();
+           drive.followTrajectorySequence(tostack2);
+
+            drive.updatePoseEstimate();
+        }
+
+
         TrajectorySequence toMED1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToSplineHeading(medjun1,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
@@ -175,18 +217,47 @@ public class Revamp extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
                 .build();
+        sleep(2000);
+        drive.updatePoseEstimate();
         drive.followTrajectorySequence(toMED1);
+        sleep(2000);
         drive.updatePoseEstimate();
-        drive.followTrajectorySequence(tostack);
-        drive.updatePoseEstimate();
-        TrajectorySequence toMED2  = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(medjun2,
+
+
+
+        TrajectorySequence tostack3 = drive.trajectorySequenceBuilder(medjun1)
+                .lineToLinearHeading(stackPose,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
                 .build();
-        drive.followTrajectorySequence(toMED2);
+        drive.updatePoseEstimate();
+        drive.followTrajectorySequence(tostack3);
+
+
+        for(int i = 0 ; i<2 ; i++){
+            sleep(2000);
+            drive.updatePoseEstimate();
+            TrajectorySequence toMED2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineToSplineHeading(medjun2,
+                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                    )
+                    .build();
+            drive.followTrajectorySequence(toMED2);
+            TrajectorySequence tostack4 = drive.trajectorySequenceBuilder(medjun2)
+                    .lineToLinearHeading(stackPose,
+                            SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                    DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                    )
+                    .build();
+            drive.updatePoseEstimate();
+            drive.followTrajectorySequence(tostack4);
+        }
+
 
 
 
@@ -196,19 +267,73 @@ public class Revamp extends LinearOpMode {
         // then calls score cone that goes from stack to target junction
         // commented out
 
-       /* if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
+        if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
-        else { parkBot(drive, 1, parkingSpots); } */
+        else { parkBot(drive, 1, parkingSpots); }
+
+     */
 
     }
 
-    public void toStack(){
+    public void scoresmall(SampleMecanumDrive _drive){
+
+        _drive.setHeight(1500);
+
+        _drive.updatePoseEstimate();
+        TrajectorySequence toSMALL = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
+                .lineToSplineHeading(smalljun,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
+
+
+        _drive.followTrajectorySequence(toSMALL);
+        _drive.setGrip(false);
+
+
+        _drive.updatePoseEstimate();
+        TrajectorySequence tostack2 = _drive.trajectorySequenceBuilder(smalljun)
+                .lineToLinearHeading(stackPose,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
+
+        _drive.followTrajectorySequence(tostack2);
+
+        _drive.setHeight(600);
+        _drive.setGrip(true);
 
     }
 
     // mj - middle junction
-    public void mj(){
+    public void scoremed(SampleMecanumDrive _drive){
+        _drive.setHeight(2000);
+
+        _drive.updatePoseEstimate();
+        TrajectorySequence toMED2 = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
+                .lineToSplineHeading(medjun2,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
+        _drive.followTrajectorySequence(toMED2);
+        TrajectorySequence tostack4 = _drive.trajectorySequenceBuilder(medjun2)
+                .lineToLinearHeading(stackPose,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
+        _drive.updatePoseEstimate();
+        _drive.followTrajectorySequence(tostack4);
+        _drive.setHeight(400);
+        _drive.setGrip(false);
 
     }
 
