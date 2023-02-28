@@ -31,7 +31,7 @@ public class Revamp extends LinearOpMode {
     private final Pose2d stackPose = new Pose2d(48, -13, Math.toRadians(-5));
     // restrictions both in m/s
 
-    private final Pose2d smalljun = new Pose2d(37, -13, Math.toRadians(280));
+    private final Pose2d smalljun = new Pose2d(37, -13, Math.toRadians(285));
 
    // private final Pose2d medjun1=new Pose2d(1,-11, Math.toRadians(290));
 
@@ -157,7 +157,7 @@ public class Revamp extends LinearOpMode {
         for(int i = 5; i>1;i--){
             if (i>3)
             {
-                scoresmall(drive);
+                scoresmall(drive,i);
             }
             else
             {
@@ -276,7 +276,7 @@ public class Revamp extends LinearOpMode {
 
     }
 
-    public void scoresmall(SampleMecanumDrive _drive){
+    public void scoresmall(SampleMecanumDrive _drive, int h){
 
         _drive.setHeight(1500);
 
@@ -305,8 +305,10 @@ public class Revamp extends LinearOpMode {
 
         _drive.followTrajectorySequence(tostack2);
 
-        _drive.setHeight(600);
+        _drive.setHeight(1350-(h*150));
+        sleep(500)
         _drive.setGrip(true);
+        sleep(250);
 
     }
 
