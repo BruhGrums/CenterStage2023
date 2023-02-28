@@ -353,9 +353,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     // Bundles all the functions needed to initialize the arm controls
-    public void initArm(Telemetry _telemetry) {
+    public void initArm() {
         stopAndResetMotors();
-        _telemetry.addData("toppos", slideTop.getCurrentPosition());
         setGrip(false);
         setSlideVelocity(0, slideLeft, slideRight, slideTop);
         setHeight(0);

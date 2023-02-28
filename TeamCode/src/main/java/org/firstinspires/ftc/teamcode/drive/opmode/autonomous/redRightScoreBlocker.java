@@ -11,42 +11,35 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.parkingZoneFinder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
-@Autonomous (name= "RightMEDStack", group = "comepetition")
-public class Revamp extends LinearOpMode {
-    private final Pose2d startPose = new Pose2d(35, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
+@Autonomous(name = "Blocker Red Right Score", group = "competition")   //Telemtry allows us in the driver hub quickly chose which program to run
+public class redRightScoreBlocker extends LinearOpMode {
+//extends linearOpMode allows us to call functions from other helper classes
+    private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
     // later be called in our first trajectories
 
     //score pose is the x and y that our IMU tries to go too and the engocders goathers position data. The heading should looking at the nearest high junction
-    private final Pose2d scorePose = new Pose2d(37, -11, Math.toRadians(145));
+    private final Pose2d scorePose = new Pose2d(40, -11, Math.toRadians(141));
 
     // stack pose is what we point to when calling in our function so that we dont have to constantly put the same code in different trajectories. Stack pose
     // just slightly changes the postion of the robot while mainly just being a turn the change is y is for allowing the trjectory to build properly
-    private final Pose2d stackPose = new Pose2d(48, -13, Math.toRadians(356));
-    // restrictions both in m/s
-
-    private final Pose2d smalljun = new Pose2d(37, -11, Math.toRadians(356));
-
-    private final Pose2d medjun1=new Pose2d(13,-11, Math.toRadians(356));
-
-    private final Pose2d medjun2= new Pose2d(38,-13, Math.toRadians(220));
+    private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
+// restrictions both in m/s
     private final double travelSpeed = 45.0, travelAccel = 30.0;
-    // the three different parking locations in poses
+// the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
             -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
-    // camera images sizes 1280 pixles
-
-
+// camera images sizes 1280 pixles
+    private final int width = 1280, height = 720;
+// creates a dive object allows us to map funtions to our moters
     SampleMecanumDrive drive;
 
-    private final int width = 1280, height = 720;
-
+    // this is the microsoft life cam 3000
     OpenCvWebcam adjustCamera = null;
 
     // this is just our pipeline creating the filter of color on the signal sleeve
@@ -72,7 +65,6 @@ public class Revamp extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
                 .build();
-
 
         // Set up the webcam
         WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "adjustCamera");
@@ -133,95 +125,91 @@ public class Revamp extends LinearOpMode {
 
         // Wait for grip to fully open and cone to drop
         sleep(500);
-
-        TrajectorySequence tostack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(stackPose,
-                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-        )
-                .build();
-
-
-        drive.followTrajectorySequence(tostack);
-        drive.updatePoseEstimate();
-        drive.setHeight(845);
-        sleep(2000);
-        drive.setGrip(true);
-        sleep(2000);
-        drive.setHeight(1500);
-        sleep(500);
-
-        TrajectorySequence toSMALL = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(smalljun,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-
-
-
-        drive.followTrajectorySequence(toSMALL);
-        drive.setGrip(false);
-        drive.setHeight(1500);
-        drive.updatePoseEstimate();
-        drive.followTrajectorySequence(tostack);
-        drive.updatePoseEstimate();
-        TrajectorySequence toMED1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(medjun1,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-        drive.followTrajectorySequence(toMED1);
-        drive.updatePoseEstimate();
-        drive.followTrajectorySequence(tostack);
-        drive.updatePoseEstimate();
-        TrajectorySequence toMED2  = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(medjun2,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-        drive.followTrajectorySequence(toMED2);
-
-
-
-
+        sleep(4000);
         // for liip to repeate 3 timss
         // calles totrack fuction that turns around grabs a cone and then stops
         // then calls score cone that goes from stack to target junction
-        // commented out
-
-       /* if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
+        for (int i = 5; i > 2; i--) {
+            toStack(drive, i);
+            scoreCone(drive, i);
+        }
+// this is a qick if else statements that just calls the parkbot fucntion that just parks our bot using the zone from a list of the different parking postion
+        if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
-        else { parkBot(drive, 1, parkingSpots); } */
-
+        else { parkBot(drive, 1, parkingSpots); }
     }
 
-    public void toStack(){
+    private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
+        // stackHeight is given as height of stack in cones
+        //step one
 
+        // we have to do _drive because if we just did drive we would run into a localization error.
+
+        // this is after we drop we pull in the claw
+        _drive.setExtension(500);
+
+        // we wait for the claw to be pulled back becuase if we dont we would tunr and pull the junction this is also to reduce our radius which reduces
+        // our roational intertia this is a principle tought in phyics classes higher the rotational inertia the harder it is to turn and to stop turning
+
+        sleep(200);
+// when hard coding we having problems with correct radians for the first turn to the stack we have to add degrees to compensate this problem
+//we just have to call get pose esitment to allow our roboto to understnad where it is and then whrwr it wants to go.
+        _drive.updatePoseEstimate();
+        TrajectorySequence turnToStack = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
+                .addTemporalMarker(0.5, () -> {
+                    _drive.setHeight(120 + (stackHeight * 145));
+                })
+                .addTemporalMarker(1, () -> {
+                    _drive.setExtension(1850);
+                })
+                .turn(Math.toRadians(-154), Math.toRadians(120), Math.toRadians(90))
+                .build();
+
+        _drive.followTrajectorySequence(turnToStack);
+
+        // claw moves out to grab a cone from the stack
+        _drive.setExtension(2100);
+
+        //we wait because if we dont then the claw closes before we can grip a cone
+        sleep(750);
+// cone is grab
+        _drive.setGrip(true);
+        sleep(450);
+        //this is us now lifting the cone
+
+        _drive.setHeight(4100);
+        sleep(350);
+        //pull back before we turn
+        _drive.setExtension(800);
     }
 
-    // mj - middle junction
-    public void mj(){
+    private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
 
+        //trajectory to turn to target junction
+        _drive.updatePoseEstimate();
+        TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
+                .turn(Math.toRadians(146), Math.toRadians(120), Math.toRadians(90))
+                .build();
+// just set the height of the claw
+        _drive.setHeight(4100);
+//we start to turn
+        _drive.followTrajectorySequence(reposition);
+
+        // we push out our arm 
+        _drive.setExtension(800);
+
+        // Wait for wiggles to stop just in case
+        sleep(250);
+
+        // Open grip to drop cone
+        _drive.setGrip(false);
+        sleep(250);
+        sleep(4000);
     }
 
-    //high junction
-    public void hj (){
-
-    }
-
-    // low junction
-    public void lj() {
-
-    }
-
+    // This code parks our robot using a list of locations and zones. If you were to use encoders
+    // it would work a bit differently, but i hope this helps
     private void parkBot(SampleMecanumDrive _drive, int _zone, Pose2d[] locations) {
         _drive.updatePoseEstimate();
         Trajectory moveToPark = _drive.trajectoryBuilder(_drive.getPoseEstimate())
@@ -231,11 +219,9 @@ public class Revamp extends LinearOpMode {
         _drive.setGrip(false);
         _drive.setExtension(50);
         _drive.setHeight(4400);
-        _drive.setSlideVelocity(4000, _drive.slideLeft, _drive.slideRight, _drive.slideTop);
 
         _drive.followTrajectory(moveToPark);
 
         _drive.setHeight(100);
     }
-
 }

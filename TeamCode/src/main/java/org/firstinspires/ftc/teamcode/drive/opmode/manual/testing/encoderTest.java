@@ -10,7 +10,7 @@ public class encoderTest extends OpMode {
     DcMotor perpendicularEncoder;
 
     public void init() {
-        parallelEncoder = hardwareMap.dcMotor.get("parallelEncoder");
+        parallelEncoder = hardwareMap.dcMotor.get("rightRear");
         perpendicularEncoder = hardwareMap.dcMotor.get("leftFront");
         telemetry.addLine("ready");
         telemetry.update();
