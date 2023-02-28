@@ -64,7 +64,7 @@ public class redRightDefense extends LinearOpMode {
                 .splineTo(new Vector2d(35, -23), Math.toRadians(110),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
-                .splineTo(new Vector2d(29, -10), Math.toRadians(120),
+                .splineTo(new Vector2d(230, -12), Math.toRadians(120),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
@@ -118,10 +118,14 @@ public class redRightDefense extends LinearOpMode {
     }
 
     private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
+        Pose2d waypoint = new Pose2d(24, -12, Math.toRadians(90));
         sleep(500);
         _drive.updatePoseEstimate();
-        Trajectory goToStack = _drive.trajectoryBuilder(new Pose2d(24, -12, Math.toRadians(90)))
-                .splineToLinearHeading(new Pose2d(55, -12, Math.toRadians(160)), Math.toRadians(90),
+        if (stackHeight == 5) {
+            waypoint = _drive.getPoseEstimate();
+        }
+        Trajectory goToStack = _drive.trajectoryBuilder(waypoint)
+                .splineToLinearHeading(waypoint, Math.toRadians(160),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
@@ -133,7 +137,7 @@ public class redRightDefense extends LinearOpMode {
         sleep(500);
         _drive.updatePoseEstimate();
         Trajectory goToScore = _drive.trajectoryBuilder(new Pose2d(55, -12, Math.toRadians(0)))
-                .splineToLinearHeading(new Pose2d(24, -12, Math.toRadians(20)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(24, -12, Math.toRadians(0)), Math.toRadians(20),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
