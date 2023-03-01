@@ -66,8 +66,8 @@ public class Revamp extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         // Create the first trajectory to be run when the round starts
-// this is a trajectory we are telling the robot when goToStack is called to go from our stack pose to the score pose in a spline that looks like an s
-        TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
+// this is a trajectory we are telling the robot when goToPreload is called to go from our stack pose to the score pose in a spline that looks like an s
+        TrajectorySequence goToPreload = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(highJun,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -96,7 +96,7 @@ public class Revamp extends LinearOpMode {
             }
         });
 
-        while (!isStarted()) {
+        while (opModeInInit()) {
             zone = parkingZonePipeline.getParkingZone();
             telemetry.addData("Parking Zone", zone);
             telemetry.update();
@@ -120,7 +120,7 @@ public class Revamp extends LinearOpMode {
         drive.setHeight(4200);
         drive.setExtension(750);
 
-        drive.followTrajectorySequence(goToStack);
+        drive.followTrajectorySequence(goToPreload);
 
         TrajectorySequence tostack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(stackPose,
@@ -154,23 +154,22 @@ public class Revamp extends LinearOpMode {
         drive.setGrip(true);
 
         drive.updatePoseEstimate();
-                TrajectorySequence toSMALL = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(smalljun,
-                                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                        )
-                        .build();
+        TrajectorySequence toSMALL = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToSplineHeading(smalljun,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
 
-         drive.updatePoseEstimate();
-                TrajectorySequence toMED2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(medjun2,
-                                SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                        )
-                        .build();
-
+        drive.updatePoseEstimate();
+        TrajectorySequence toMED2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToSplineHeading(medjun2,
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
 
         //TODO THIS IS THE END OF THE FIRST CYCLE
 
