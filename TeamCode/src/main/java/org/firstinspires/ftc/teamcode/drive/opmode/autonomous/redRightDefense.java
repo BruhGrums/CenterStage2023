@@ -118,14 +118,10 @@ public class redRightDefense extends LinearOpMode {
     }
 
     private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
-        Pose2d waypoint = new Pose2d(24, -12, Math.toRadians(90));
         sleep(500);
         _drive.updatePoseEstimate();
-        if (stackHeight == 5) {
-            waypoint = _drive.getPoseEstimate();
-        }
-        Trajectory goToStack = _drive.trajectoryBuilder(waypoint)
-                .splineToLinearHeading(waypoint, Math.toRadians(160),
+        Trajectory goToStack = _drive.trajectoryBuilder(new Pose2d(30, -12, Math.toRadians(120)))
+                .splineToLinearHeading(new Pose2d(55, -12, 0), Math.toRadians(-10),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
@@ -137,7 +133,7 @@ public class redRightDefense extends LinearOpMode {
         sleep(500);
         _drive.updatePoseEstimate();
         Trajectory goToScore = _drive.trajectoryBuilder(new Pose2d(55, -12, Math.toRadians(0)))
-                .splineToLinearHeading(new Pose2d(24, -12, Math.toRadians(0)), Math.toRadians(20),
+                .splineToLinearHeading(new Pose2d(30, -12, Math.toRadians(120)), Math.toRadians(160),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
