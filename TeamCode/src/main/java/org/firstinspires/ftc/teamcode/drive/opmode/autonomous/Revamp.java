@@ -90,7 +90,7 @@ public class Revamp extends LinearOpMode {
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
-                .splineToConstantHeading(stackPose.vec(), stackPose.getHeading(),
+                .splineToConstantHeading((stackPose.minus(new Pose2d(1, 0, Math.toRadians(0)))).vec(), stackPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
