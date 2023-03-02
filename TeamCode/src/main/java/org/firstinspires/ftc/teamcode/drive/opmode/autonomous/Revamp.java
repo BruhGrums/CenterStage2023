@@ -24,7 +24,7 @@ public class Revamp extends LinearOpMode {
     private final Pose2d lowJunction = new Pose2d(31, -12, Math.toRadians(-53));
     private final Pose2d medJunction = new Pose2d(38,-13, Math.toRadians(-140));
     private final Pose2d highJunction = new Pose2d(37, -12, Math.toRadians(145));
-    private final double travelSpeed = 25, travelAccel = 20;
+    private final double travelSpeed = 40, travelAccel = 20;
     // the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
             -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
@@ -96,8 +96,8 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toMedFromStack = drive.trajectorySequenceBuilder(stackPose)
-                .setTangent(Math.toRadians(160))
-                .splineToSplineHeading(medJunction, Math.toRadians(160),
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(medJunction, Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -195,7 +195,7 @@ public class Revamp extends LinearOpMode {
             _drive.followTrajectorySequence(stackMove);
         }
 
-        _drive.setHeight(120 + (height * 145));
+        _drive.setHeight(findHeight(height));
         sleep(2000);
         _drive.setGrip(true);
         sleep(500);
@@ -216,7 +216,7 @@ public class Revamp extends LinearOpMode {
             _drive.followTrajectorySequence(stackMove);
         }
 
-        _drive.setHeight(120 + (height * 145));
+        _drive.setHeight(findHeight(height));
         sleep(2500);
         _drive.setGrip(true);
         sleep(500);
@@ -244,5 +244,7 @@ public class Revamp extends LinearOpMode {
 
         _drive.setHeight(100);
     }
+
+    private int findHeight(int height) { return (805 - ((5 - height) * 155)); }
 
 }
