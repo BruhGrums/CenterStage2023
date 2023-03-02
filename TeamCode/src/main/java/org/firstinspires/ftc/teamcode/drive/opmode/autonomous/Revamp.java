@@ -62,7 +62,12 @@ public class Revamp extends LinearOpMode {
 
         TrajectorySequence toStackFromHigh = drive.trajectorySequenceBuilder(highJunction)
                 .setTangent(Math.toRadians(-25))
-                .splineToLinearHeading(stackPose, Math.toRadians(15),
+                .splineToSplineHeading(new Pose2d(43, -14, Math.toRadians(0)), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .splineToConstantHeading(stackPose.vec(), stackPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -222,6 +227,7 @@ public class Revamp extends LinearOpMode {
         sleep(500);
 
         _drive.setHeight(3000);
+        sleep(250);
 
         _drive.followTrajectorySequence(scoreMove);
 
