@@ -152,14 +152,6 @@ public class Revamp extends LinearOpMode {
         // Wait for grip to fully open and cone to drop
         sleep(500);
 
-
-
-        //to stack is right
-        drive.followTrajectorySequence(toStackFromHigh);
-        drive.setHeight(725);
-        sleep(2000);
-        drive.setGrip(true);
-
         drive.updatePoseEstimate();
 
         //TODO THIS IS THE END OF THE FIRST CYCLE
@@ -167,7 +159,7 @@ public class Revamp extends LinearOpMode {
         for(int i = 5; i > 1; i--){
             sleep(500);
             if (i>3) {
-                scoreSmall(drive, i, toStackFromLow, toLowFromStack);
+                scoreSmall(drive, i, toStackFromLow, toLowFromStack, toStackFromHigh);
             } else {
                 //scoreMed(drive, i, toMED2, toStack);
             }
@@ -180,7 +172,18 @@ public class Revamp extends LinearOpMode {
 
     }
 
-    public void scoreSmall(SampleMecanumDrive _drive, int height, TrajectorySequence stackMove, TrajectorySequence scoreMove){
+    public void scoreSmall(SampleMecanumDrive _drive, int height, TrajectorySequence stackMove, TrajectorySequence scoreMove, TrajectorySequence altStackMove){
+
+        if (height == 5) {
+            _drive.followTrajectorySequence(altStackMove);
+        } else {
+            _drive.followTrajectorySequence(stackMove);
+        }
+
+        _drive.setHeight(120 + (height * 145));
+        sleep(2000);
+        _drive.setGrip(true);
+        sleep(500);
 
         _drive.setHeight(1800);
 
@@ -188,13 +191,6 @@ public class Revamp extends LinearOpMode {
 
         _drive.setGrip(false);
         sleep(250);
-
-        _drive.followTrajectorySequence(stackMove);
-        _drive.setHeight(1350-(height*150));
-        sleep(500);
-        _drive.setGrip(true);
-        sleep(250);
-
     }
 
     private void parkBot(SampleMecanumDrive _drive, int _zone, Pose2d[] locations) {
