@@ -22,7 +22,7 @@ public class Revamp extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(35, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at'/
     private final Pose2d stackPose = new Pose2d(48, -12, Math.toRadians(0));
     private final Pose2d lowJunction = new Pose2d(31, -12, Math.toRadians(-53));
-    private final Pose2d medJunction = new Pose2d(38,-13, Math.toRadians(-140));
+    private final Pose2d medJunction = new Pose2d(37,-14, Math.toRadians(-140));
     private final Pose2d highJunction = new Pose2d(37, -12, Math.toRadians(145));
     private final double travelSpeed = 40, travelAccel = 20;
     // the three different parking locations in poses
@@ -83,8 +83,8 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toStackFromMed = drive.trajectorySequenceBuilder(medJunction)
-                .setTangent(Math.toRadians(-10))
-                .splineToSplineHeading(stackPose, Math.toRadians(-10),
+                .setTangent(Math.toRadians(20))
+                .splineToSplineHeading(stackPose, Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -101,8 +101,8 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toMedFromStack = drive.trajectorySequenceBuilder(stackPose)
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(medJunction, Math.toRadians(180),
+                .setTangent(Math.toRadians(175))
+                .splineToLinearHeading(medJunction, Math.toRadians(-160),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
