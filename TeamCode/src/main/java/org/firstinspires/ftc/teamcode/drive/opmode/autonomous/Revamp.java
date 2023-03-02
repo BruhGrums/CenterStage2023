@@ -22,7 +22,7 @@ public class Revamp extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(35, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at'/
     private final Pose2d stackPose = new Pose2d(49.5, -12, Math.toRadians(0));
     private final Pose2d lowJunction = new Pose2d(31, -12, Math.toRadians(-53));
-    private final Pose2d medJunction = new Pose2d(36,-14, Math.toRadians(-140));
+    private final Pose2d medJunction = new Pose2d(35,-14, Math.toRadians(-140));
     private final Pose2d highJunction = new Pose2d(37, -12, Math.toRadians(145));
     private final double travelSpeed = 40, travelAccel = 20;
     // the three different parking locations in poses
@@ -251,6 +251,6 @@ public class Revamp extends LinearOpMode {
         _drive.setHeight(100);
     }
 
-    private int findHeight(int height) { return (805 - ((5 - height) * 155)); }
+    private int findHeight(int height) { return (780 - ((5 - height) * 155)); }
 
 }
