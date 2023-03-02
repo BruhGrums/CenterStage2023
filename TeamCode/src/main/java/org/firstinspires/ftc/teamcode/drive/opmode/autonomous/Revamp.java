@@ -197,49 +197,6 @@ public class Revamp extends LinearOpMode {
 
     }
 
-    // mj - middle junction
-    /*
-    public void scoreMed(SampleMecanumDrive _drive, int h, TrajectorySequence med, TrajectorySequence stack){
-        _drive.setHeight(2000);
-        _drive.updatePoseEstimate();
-        TrajectorySequence toMED2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(medJunction,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-
-        _drive.followTrajectorySequence(toMED2);
-        _drive.setGrip(false);
-               _drive.updatePoseEstimate();
-        TrajectorySequence tostack4 = _drive.trajectorySequenceBuilder(medJunction)
-                .lineToLinearHeading(stackPose,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
-                .build();
-        _drive.updatePoseEstimate();
-
-        _drive.followTrajectorySequence(tostack4);
-        _drive.setHeight(1050-(h*150));
-        _drive.setGrip(false);
-        sleep(250);
-
-    }
-
-    //high junction
-    public void hj (){
-
-    }
-
-    // low junction
-    public void lj() {
-
-    }
-     */
-
     private void parkBot(SampleMecanumDrive _drive, int _zone, Pose2d[] locations) {
         _drive.updatePoseEstimate();
         Trajectory moveToPark = _drive.trajectoryBuilder(_drive.getPoseEstimate())
