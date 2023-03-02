@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -83,8 +84,13 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toStackFromMed = drive.trajectorySequenceBuilder(medJunction)
-                .setTangent(Math.toRadians(20))
-                .splineToSplineHeading(stackPose, Math.toRadians(0),
+                .setTangent(Math.toRadians(45))
+                .splineToSplineHeading(new Pose2d(43.5, -14, Math.toRadians(0)), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .splineToConstantHeading(stackPose.vec(), stackPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -101,8 +107,12 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toMedFromStack = drive.trajectorySequenceBuilder(stackPose)
-                .setTangent(Math.toRadians(175))
-                .splineToLinearHeading(medJunction, Math.toRadians(-160),
+                .setTangent(Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(44, -12, Math.toRadians(0)), Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
+                .splineToSplineHeading(medJunction, Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
