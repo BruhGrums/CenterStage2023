@@ -25,7 +25,7 @@ public class Revamp extends LinearOpMode {
     private final Pose2d lowJunction = new Pose2d(34, -12, Math.toRadians(-53));
     private final Pose2d medJunction = new Pose2d(35,-14, Math.toRadians(-140));
     private final Pose2d highJunction = new Pose2d(37, -12, Math.toRadians(145));
-    private final double travelSpeed = 40, travelAccel = 20;
+    private final double travelSpeed = 50, travelAccel = 20;
     // the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
             -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
@@ -62,6 +62,9 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toStackFromHigh = drive.trajectorySequenceBuilder(highJunction)
+                .addTemporalMarker(0.5, () -> {
+                    drive.setHeight(findHeight(5));
+                })
                 .setTangent(Math.toRadians(-25))
                 .splineToSplineHeading(new Pose2d(43, -14, Math.toRadians(0)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
@@ -76,17 +79,23 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toStackFromLow = drive.trajectorySequenceBuilder(lowJunction)
+                .addTemporalMarker(.5, () -> {
+                    drive.setHeight(findHeight(3.5));
+                })
                 .splineToLinearHeading(stackPose, Math.toRadians(-20),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
                 .build();
-
         TrajectorySequence toStackFromMed = drive.trajectorySequenceBuilder(medJunction)
+                .addTemporalMarker(1, () -> {
+                    drive.setHeight(findHeight(2));
+                })
                 .setTangent(Math.toRadians(45))
                 .splineToSplineHeading(new Pose2d(43.5, -14, Math.toRadians(0)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                        //no bitches?
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
@@ -151,12 +160,13 @@ public class Revamp extends LinearOpMode {
         adjustCamera.stopStreaming();
         adjustCamera.closeCameraDevice();
 
-        drive.setSlideVelocity(4000, drive.slideRight, drive.slideLeft, drive.slideTop);
+        drive.setSlideVelocity(3000, drive.slideRight, drive.slideLeft, drive.slideTop);
 
         // Close the grip and move the slide up a small amount
         drive.setGrip(true);
         sleep(250);
         drive.setHeight(200);
+        //no bitches?
         drive.setExtension(50);
 
         // The sleep is necessary to wait for certain arm actions to finish
@@ -210,8 +220,7 @@ public class Revamp extends LinearOpMode {
             _drive.followTrajectorySequence(stackMove);
         }
 
-        _drive.setHeight(findHeight(height));
-        sleep(2000);
+        sleep(500);
         _drive.setGrip(true);
         sleep(500);
 
@@ -231,10 +240,9 @@ public class Revamp extends LinearOpMode {
             _drive.followTrajectorySequence(stackMove);
         }
 
-        _drive.setHeight(findHeight(height));
-        sleep(2500);
-        _drive.setGrip(true);
         sleep(500);
+        _drive.setGrip(true);
+        sleep(250);
 
         _drive.setHeight(3000);
         sleep(250);
@@ -261,6 +269,6 @@ public class Revamp extends LinearOpMode {
         _drive.setHeight(100);
     }
 
-    private int findHeight(int height) { return (780 - ((5 - height) * 155)); }
+    private int findHeight(double height) { return (int)(780 - ((5 - height) * 155)); }
 
 }
