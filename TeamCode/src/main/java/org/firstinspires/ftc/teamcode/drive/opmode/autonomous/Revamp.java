@@ -27,8 +27,8 @@ public class Revamp extends LinearOpMode {
     private final Pose2d highJunction = new Pose2d(37, -11, Math.toRadians(145));
     private final double travelSpeed = 50, travelAccel = 20;
     // the three different parking locations in poses
-    private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
-            -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
+    private Pose2d[] parkingSpots = {new Pose2d(10, -17, Math.toRadians(90)), new Pose2d(34,
+            -22, Math.toRadians(90)), new Pose2d(60, -15, Math.toRadians(90))};
     // camera images sizes 1280 pixels
 
     SampleMecanumDrive drive;
@@ -121,7 +121,7 @@ public class Revamp extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
-                .splineToSplineHeading(medJunction.minus(new Pose2d(1, -1, Math.toRadians(0))), Math.toRadians(180),
+                .splineToSplineHeading(medJunction.minus(new Pose2d(.5, -.5, Math.toRadians(0))), Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
