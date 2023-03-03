@@ -80,7 +80,7 @@ public class Revamp extends LinearOpMode {
 
         TrajectorySequence toStackFromLow = drive.trajectorySequenceBuilder(lowJunction)
                 .addTemporalMarker(.5, () -> {
-                    drive.setHeight(findHeight(3.5));
+                    drive.setHeight(findHeight(4));
                 })
                 .splineToLinearHeading(stackPose, Math.toRadians(-20),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
@@ -90,7 +90,7 @@ public class Revamp extends LinearOpMode {
                 .build();
         TrajectorySequence toStackFromMed = drive.trajectorySequenceBuilder(medJunction)
                 .addTemporalMarker(1, () -> {
-                    drive.setHeight(findHeight(2));
+                    drive.setHeight(findHeight(3));
                 })
                 .setTangent(Math.toRadians(45))
                 .splineToSplineHeading(new Pose2d(43.5, -14, Math.toRadians(0)), Math.toRadians(0),
@@ -196,15 +196,45 @@ public class Revamp extends LinearOpMode {
 
         //TODO THIS IS THE END OF THE FIRST CYCLE
 
-        for(int i = 5; i > 1; i--){
-            sleep(500);
-            if (i>3) {
-                scoreSmall(drive, i, toStackFromLow, toLowFromStack, toStackFromHigh);
-            } else {
-                scoreMed(drive, i, toStackFromMed, toMedFromStack, toStackFromLow);
-            }
+        //cone is dropped
 
-        }
+        //high2stack 5
+        drive.followTrajectorySequence(toStackFromHigh);
+        //grabcone
+        sleep(500);
+        drive.setGrip(true);
+        sleep(500);
+        //stack2low
+        drive.setHeight(1800);
+        drive.followTrajectorySequence(toLowFromStack);
+        sleep(500);
+        drive.setGrip(false);
+        sleep(500);
+        //low2stack 4
+        drive.followTrajectorySequence(toStackFromLow);
+        //grabcone
+        sleep(500);
+        drive.setGrip(true);
+        sleep(500);
+        //stack2med
+        drive.setHeight(3000);
+        drive.followTrajectorySequence(toMedFromStack);
+        sleep(500);
+        drive.setGrip(false);
+        sleep(500);
+        //med2stack 3
+        drive.followTrajectorySequence(toStackFromMed);
+        //grabcone
+        sleep(500);
+        drive.setGrip(true);
+        sleep(500);
+        //stack2med
+        drive.setHeight(3000);
+        drive.followTrajectorySequence(toMedFromStack);
+        sleep(500);
+        drive.setGrip(false);
+        sleep(500);
+        //park
         if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
