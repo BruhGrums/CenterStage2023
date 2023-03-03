@@ -21,7 +21,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous (name= "RightMEDStack", group = "comepetition")
 public class Revamp extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(35, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at'/
-    private final Pose2d stackPose = new Pose2d(49.5, -12, Math.toRadians(0));
+    private final Pose2d stackPose = new Pose2d(49.5, -10, Math.toRadians(0));
     private final Pose2d lowJunction = new Pose2d(34, -12, Math.toRadians(-53));
     private final Pose2d medJunction = new Pose2d(35,-14, Math.toRadians(-140));
     private final Pose2d highJunction = new Pose2d(37, -12, Math.toRadians(145));
@@ -79,7 +79,7 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toStackFromLow = drive.trajectorySequenceBuilder(lowJunction)
-                .addTemporalMarker(.5, () -> {
+                .addTemporalMarker(.75, () -> {
                     drive.setHeight(findHeight(4));
                 })
                 .splineToLinearHeading(stackPose, Math.toRadians(-20),
@@ -201,15 +201,15 @@ public class Revamp extends LinearOpMode {
         //high2stack 5
         drive.followTrajectorySequence(toStackFromHigh);
         //grabcone
-        sleep(500);
+        sleep(750);
         drive.setGrip(true);
         sleep(500);
         //stack2low
         drive.setHeight(1800);
         drive.followTrajectorySequence(toLowFromStack);
-        sleep(500);
+        sleep(250);
         drive.setGrip(false);
-        sleep(500);
+        sleep(250);
         //low2stack 4
         drive.followTrajectorySequence(toStackFromLow);
         //grabcone
