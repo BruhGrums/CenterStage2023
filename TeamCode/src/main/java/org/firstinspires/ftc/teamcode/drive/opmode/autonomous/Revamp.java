@@ -21,10 +21,10 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous (name= "RightMEDStack", group = "comepetition")
 public class Revamp extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(35, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at'/
-    private final Pose2d stackPose = new Pose2d(49.5, -9, Math.toRadians(0));
+    private final Pose2d stackPose = new Pose2d(49.5, -12, Math.toRadians(0));
     private final Pose2d lowJunction = new Pose2d(34, -12, Math.toRadians(-53));
-    private final Pose2d medJunction = new Pose2d(35,-14, Math.toRadians(-140));
-    private final Pose2d highJunction = new Pose2d(37, -12, Math.toRadians(145));
+    private final Pose2d medJunction = new Pose2d(34.5,-14.5, Math.toRadians(-140));
+    private final Pose2d highJunction = new Pose2d(37, -11, Math.toRadians(145));
     private final double travelSpeed = 50, travelAccel = 20;
     // the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
@@ -93,13 +93,13 @@ public class Revamp extends LinearOpMode {
                     drive.setHeight(findHeight(3));
                 })
                 .setTangent(Math.toRadians(45))
-                .splineToSplineHeading(new Pose2d(43.5, -14, Math.toRadians(0)), Math.toRadians(15),
+                .splineToSplineHeading(new Pose2d(43.5, -12, Math.toRadians(0)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                         //no bitches?
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
-                .splineToConstantHeading((stackPose.minus(new Pose2d(1, 0, Math.toRadians(0)))).vec(), stackPose.getHeading(),
+                .splineToConstantHeading((stackPose.minus(new Pose2d(0, 1, Math.toRadians(0)))).vec(), stackPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -116,6 +116,19 @@ public class Revamp extends LinearOpMode {
                 .build();
 
         TrajectorySequence toMedFromStack = drive.trajectorySequenceBuilder(stackPose)
+                .setTangent(Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(44, -12, Math.toRadians(0)), Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
+                .splineToSplineHeading(medJunction.minus(new Pose2d(1, -1, Math.toRadians(0))), Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed,
+                                DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .build();
+
+        TrajectorySequence toMedFromStackSecond = drive.trajectorySequenceBuilder(stackPose)
                 .setTangent(Math.toRadians(180))
                 .splineToSplineHeading(new Pose2d(44, -12, Math.toRadians(0)), Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
@@ -201,7 +214,7 @@ public class Revamp extends LinearOpMode {
         //high2stack 5
         drive.followTrajectorySequence(toStackFromHigh);
         //grabcone
-        sleep(750);
+        sleep(500);
         drive.setGrip(true);
         sleep(500);
         //stack2low
@@ -230,7 +243,7 @@ public class Revamp extends LinearOpMode {
         sleep(500);
         //stack2med
         drive.setHeight(3000);
-        drive.followTrajectorySequence(toMedFromStack);
+        drive.followTrajectorySequence(toMedFromStackSecond);
         sleep(500);
         drive.setGrip(false);
         sleep(500);
