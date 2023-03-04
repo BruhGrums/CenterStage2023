@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.manual.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+@Disabled
 @TeleOp(group = "testing")
 public class encodedSlides extends LinearOpMode {
     DcMotorEx slideLeft, slideRight, slideTop;

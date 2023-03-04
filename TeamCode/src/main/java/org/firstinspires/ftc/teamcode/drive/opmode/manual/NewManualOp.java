@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.manual;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
 
+@Disabled
 @TeleOp(name = "Manual Op")
 public class NewManualOp extends OpMode {
     // Create new robot and controller objects from the classes we defined

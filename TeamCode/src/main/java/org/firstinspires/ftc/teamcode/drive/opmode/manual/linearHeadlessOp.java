@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.manual;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
 import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Slide;
 
+@Disabled
 @TeleOp(group = "beta")
 public class linearHeadlessOp extends LinearOpMode {
     private Robot robot;

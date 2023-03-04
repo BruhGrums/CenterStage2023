@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-//@Disabled
+@Disabled
 @TeleOp(name = "DEPRECATED, DOES NOT WORK - Manual Op")
 public class ManualOp extends OpMode {
     DcMotor leftFront;
