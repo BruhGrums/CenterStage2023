@@ -26,7 +26,7 @@ public class RevampGS extends LinearOpMode {
     private final Pose2d highJunction = new Pose2d(37, -11, Math.toRadians(145));
     private final double travelSpeed = 50, travelAccel = 20;
     // the three different parking locations in poses
-    private Pose2d[] parkingSpots = {new Pose2d(10, -17, Math.toRadians(90)), new Pose2d(34,
+    private Pose2d[] parkingSpots = {new Pose2d(8, -19, Math.toRadians(90)), new Pose2d(34,
             -22, Math.toRadians(90)), new Pose2d(60, -15, Math.toRadians(90))};
     // camera images sizes 1280 pixels
 
