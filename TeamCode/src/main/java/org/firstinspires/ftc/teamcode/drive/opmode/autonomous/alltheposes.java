@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -14,3 +14,5 @@ public class alltheposes extends LinearOpMode {
     private final Pose2d medJunction = new Pose2d(-34.5,-14.5, Math.toRadians(-40));
     private final Pose2d highJunction = new Pose2d(-37, -11, Math.toRadians(35));
 }
+
+ */
