@@ -53,8 +53,8 @@ public class RevampGSLeft extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence goToPreload = drive.trajectorySequenceBuilder(startPose)
-                .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(highJunction, Math.toRadians(90),
+                //was spline to spline now just linetospline so tangent might not be needed if so both need to be 90
+                .lineToSplineHeading(highJunction,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -64,6 +64,8 @@ public class RevampGSLeft extends LinearOpMode {
         TrajectorySequence toStackFromHigh = drive.trajectorySequenceBuilder(highJunction)
                 .addTemporalMarker(0.5, () -> {
                     drive.setHeight(findHeight(5));
+
+                    //some of this should be line to leiner heading ngl instead of splinetospline
                 })
                 .setTangent(Math.toRadians(-155))
                 .splineToSplineHeading(new Pose2d(-43, -14, Math.toRadians(180)), Math.toRadians(180),
