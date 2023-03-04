@@ -297,16 +297,24 @@ public class RevampGS extends LinearOpMode {
 
     private void parkBot(SampleMecanumDrive _drive, int _zone, Pose2d[] locations) {
         _drive.updatePoseEstimate();
-        Trajectory moveToPark = _drive.trajectoryBuilder(_drive.getPoseEstimate())
+        TrajectorySequence moveToPark = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
                 .lineToLinearHeading(locations[_zone])
                 .build();
+
+        if (_zone == 2) {
+            moveToPark = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(34, -40, Math.toRadians(90)))
+                    .lineToLinearHeading(new Pose2d(62, -38, Math.toRadians(90)))
+                    .build();
+        }
+
 
         _drive.setGrip(false);
         _drive.setExtension(50);
         _drive.setHeight(4400);
         _drive.setSlideVelocity(4000, _drive.slideLeft, _drive.slideRight, _drive.slideTop);
 
-        _drive.followTrajectory(moveToPark);
+        _drive.followTrajectorySequence(moveToPark);
 
         _drive.setHeight(100);
     }
