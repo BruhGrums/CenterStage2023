@@ -20,13 +20,13 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous (name= "LeftMEDgs", group = "comepetition")
 public class RevampGSLeft extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(-35, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at'/
-    private final Pose2d stackPose = new Pose2d(-49.5, -12, Math.toRadians(180));
+    private final Pose2d stackPose = new Pose2d(-49.5, -12, Math.toRadians(0));
     private final Pose2d lowJunction = new Pose2d(-34, -12, Math.toRadians(-127));
     private final Pose2d medJunction = new Pose2d(-34.5,-14.5, Math.toRadians(-40));
     private final Pose2d highJunction = new Pose2d(-37, -11, Math.toRadians(35));
     private final double travelSpeed = 50, travelAccel = 20;
     // the three different parking locations in poses
-    private Pose2d[] parkingSpots = {new Pose2d(-10, -17, Math.toRadians(90)), new Pose2d(-34,
+    private Pose2d[] parkingSpots = {new Pose2d(-8, -18, Math.toRadians(90)), new Pose2d(-34,
             -22, Math.toRadians(90)), new Pose2d(-60, -15, Math.toRadians(90))};
     // camera images sizes 1280 pixels
 
@@ -53,7 +53,8 @@ public class RevampGSLeft extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence goToPreload = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(highJunction,
+                .setTangent(Math.toRadians(90))
+                .splineToSplineHeading(highJunction, Math.toRadians(90),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -78,7 +79,6 @@ public class RevampGSLeft extends LinearOpMode {
                 .build();
 
         TrajectorySequence toStackFromLow = drive.trajectorySequenceBuilder(lowJunction)
-                .setTangent(180)
                 .addTemporalMarker(.75, () -> {
                     drive.setHeight(findHeight(4));
                 })
@@ -93,13 +93,13 @@ public class RevampGSLeft extends LinearOpMode {
                     drive.setHeight(findHeight(3));
                 })
                 .setTangent(Math.toRadians(135))
-                .splineToSplineHeading(new Pose2d(-43.5, -12, Math.toRadians(1800)), Math.toRadians(180),
+                .splineToSplineHeading(new Pose2d(-43.5, -12, Math.toRadians(180)), Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
-                        //no bitches?
+                                //no bitches?
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
-                .splineToConstantHeading((stackPose.minus(new Pose2d(0, 1, Math.toRadians(180)))).vec(), stackPose.getHeading(),
+                .splineToConstantHeading((stackPose.minus(new Pose2d(-1.5, 1, Math.toRadians(0)))).vec(), stackPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -121,7 +121,7 @@ public class RevampGSLeft extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
-                .splineToSplineHeading(((new Pose2d(-34.5,-13.5, Math.toRadians(-40)))), Math.toRadians(0),
+                .splineToSplineHeading(((new Pose2d(-36,-13, Math.toRadians(-40)))), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
