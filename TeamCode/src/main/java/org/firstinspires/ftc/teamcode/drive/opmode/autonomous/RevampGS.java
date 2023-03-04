@@ -26,7 +26,7 @@ public class RevampGS extends LinearOpMode {
     private final Pose2d highJunction = new Pose2d(37, -11, Math.toRadians(145));
     private final double travelSpeed = 50, travelAccel = 20;
     // the three different parking locations in poses
-    private Pose2d[] parkingSpots = {new Pose2d(8, -19, Math.toRadians(90)), new Pose2d(34,
+    private Pose2d[] parkingSpots = {new Pose2d(8, -18, Math.toRadians(90)), new Pose2d(34,
             -22, Math.toRadians(90)), new Pose2d(60, -15, Math.toRadians(90))};
     // camera images sizes 1280 pixels
 
@@ -98,7 +98,7 @@ public class RevampGS extends LinearOpMode {
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
-                .splineToConstantHeading((stackPose.minus(new Pose2d(0, 1, Math.toRadians(0)))).vec(), stackPose.getHeading(),
+                .splineToConstantHeading((stackPose.minus(new Pose2d(2, 1, Math.toRadians(0)))).vec(), stackPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
@@ -120,7 +120,7 @@ public class RevampGS extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel))
-                .splineToSplineHeading(((new Pose2d(34.5,-13.5, Math.toRadians(-140)))), Math.toRadians(180),
+                .splineToSplineHeading(((new Pose2d(36,-13, Math.toRadians(-140)))), Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
                                 DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
