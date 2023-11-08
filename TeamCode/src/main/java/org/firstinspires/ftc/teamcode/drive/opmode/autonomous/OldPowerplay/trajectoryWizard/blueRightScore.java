@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.OldPowerplay.trajectoryWizard;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.drive.Drive;
@@ -23,9 +23,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
-@Autonomous(name = "Red Right Score", group = "competition")   //Telemtry allows us in the driver hub quickly chose which program to run
-public class redRightScore extends LinearOpMode {
-//extends linearOpMode allows us to call functions from other helper classes
+@Autonomous(name = "Blue Right Score", group = "competition")   //Telemtry allows us in the driver hub quickly chose which program to run
+public class blueRightScore extends LinearOpMode {
+    //extends linearOpMode allows us to call functions from other helper classes
     private final Pose2d startPose = new Pose2d(36, -64.25, Math.toRadians(90)); // our Starting pose allows us to know our postions of the robot and know what way it os looking at
     // later be called in our first trajectories
 
@@ -35,14 +35,14 @@ public class redRightScore extends LinearOpMode {
     // stack pose is what we point to when calling in our function so that we dont have to constantly put the same code in different trajectories. Stack pose
     // just slightly changes the postion of the robot while mainly just being a turn the change is y is for allowing the trjectory to build properly
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
-// restrictions both in m/s
+    // restrictions both in m/s
     private final double travelSpeed = 45.0, travelAccel = 30.0;
-// the three different parking locations in poses
+    // the three different parking locations in poses
     private Pose2d[] parkingSpots = {new Pose2d(12, -17, Math.toRadians(90)), new Pose2d(36,
             -20, Math.toRadians(90)), new Pose2d(64, -15, Math.toRadians(90))};
-// camera images sizes 1280 pixles
+    // camera images sizes 1280 pixles
     private final int width = 1280, height = 720;
-// creates a dive object allows us to map funtions to our moters
+    // creates a dive object allows us to map funtions to our moters
     SampleMecanumDrive drive;
 
     // this is the microsoft life cam 3000
@@ -152,7 +152,7 @@ public class redRightScore extends LinearOpMode {
         // we have to do _drive because if we just did drive we would run into a localization error.
 
         // this is after we drop we pull in the claw
-        _drive.setExtension(500);
+        _drive.setExtension(100);
 
         // we wait for the claw to be pulled back becuase if we dont we would tunr and pull the junction this is also to reduce our radius which reduces
         // our roational intertia this is a principle tought in phyics classes higher the rotational inertia the harder it is to turn and to stop turning
@@ -165,16 +165,16 @@ public class redRightScore extends LinearOpMode {
                 .addTemporalMarker(0.5, () -> {
                     _drive.setHeight(120 + (stackHeight * 145));
                 })
-                .addTemporalMarker(1, () -> {
+                .addTemporalMarker(1.75, () -> {
                     _drive.setExtension(1850);
                 })
-                .turn(Math.toRadians(-154), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(-151), Math.toRadians(120), Math.toRadians(90))
                 .build();
 
         _drive.followTrajectorySequence(turnToStack);
 
         // claw moves out to grab a cone from the stack
-        _drive.setExtension(2100);
+        _drive.setExtension(2150);
 
         //we wait because if we dont then the claw closes before we can grip a cone
         sleep(750);
@@ -186,7 +186,7 @@ public class redRightScore extends LinearOpMode {
         _drive.setHeight(4100);
         sleep(350);
         //pull back before we turn
-        _drive.setExtension(800);
+        _drive.setExtension(625);
     }
 
     private void scoreCone(SampleMecanumDrive _drive, int stackHeight) {
@@ -201,8 +201,8 @@ public class redRightScore extends LinearOpMode {
 //we start to turn
         _drive.followTrajectorySequence(reposition);
 
-        // we push out our arm 
-        _drive.setExtension(800);
+        // we push out our arm
+        _drive.setExtension(625);
 
         // Wait for wiggles to stop just in case
         sleep(250);

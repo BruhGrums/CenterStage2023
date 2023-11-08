@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous.OldPowerplay.trajectoryWizard;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.drive.Drive;
