@@ -26,7 +26,7 @@ public class ManualOp extends OpMode {
         rightRear = hardwareMap.dcMotor.get("rightRear");
         slideLeft = hardwareMap.dcMotor.get("slideLeft");
         slideRight = hardwareMap.dcMotor.get("slideRight");
-        slideTop = hardwareMap.dcMotor.get("slideTop");
+        slideTop = hardwareMap.dcMotor.get("intakeMotor");
         //gripServo = hardwareMap.servo.get("gripServo");
 
         //gripServo.setPosition(0.5);

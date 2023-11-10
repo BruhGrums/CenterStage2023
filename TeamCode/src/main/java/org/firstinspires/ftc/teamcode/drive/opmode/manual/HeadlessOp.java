@@ -196,7 +196,7 @@ public class HeadlessOp extends OpMode {
 
         // Apply power to slide motors and gripper
         robot.setSlideMotors(slideLeft, slideRight, slideTop);
-        robot.setGrip(gripPower);
+     //   robot.setGrip(gripPower);
 
     }
 }
