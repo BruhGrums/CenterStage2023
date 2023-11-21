@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.manual;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -16,7 +17,8 @@ import org.firstinspires.ftc.teamcode.drive.opmode.helpers.Robot;
  * becomes relative to the field as opposed to the robot. You can
  * reset the forward heading by pressing "square".
  */
-@TeleOp(name = "HeadlessOp")
+@TeleOp(name = "HeadlessOpTEST")
+
 public class HeadlessOp extends OpMode {
 
     // Create new Robot object named robot

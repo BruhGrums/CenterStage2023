@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -294,31 +294,31 @@ public class Revamp extends LinearOpMode {
 
      */
 
-    }
+  //  }
 
-    public void scoresmall(SampleMecanumDrive _drive, int h, TrajectorySequence small, TrajectorySequence stack){
+  //  public void scoresmall(SampleMecanumDrive _drive, int h, TrajectorySequence small, TrajectorySequence stack){
 
-        _drive.setHeight(1500);
+    //    _drive.setHeight(1500);
 
-        _drive.followTrajectorySequence(small);
+    //    _drive.followTrajectorySequence(small);
 
 
-        _drive.followTrajectorySequence(stack);
-        _drive.setHeight(1350-(h*150));
-        sleep(500);
-        _drive.setGrip(true);
-        sleep(250);
+  //      _drive.followTrajectorySequence(stack);
+   //     _drive.setHeight(1350-(h*150));
+   //     sleep(500);
+  //      _drive.setGrip(true);
+  //      sleep(250);
 
-    }
+  //  }
 
     // mj - middle junction
-    public void scoremed(SampleMecanumDrive _drive,int h,TrajectorySequence med,TrajectorySequence stack){
-        _drive.setHeight(2000);
-        _drive.updatePoseEstimate();
+  //  public void scoremed(SampleMecanumDrive _drive,int h,TrajectorySequence med,TrajectorySequence stack){
+  //      _drive.setHeight(2000);
+  //      _drive.updatePoseEstimate();
 
-        _drive.followTrajectorySequence(toMED2);
-        _drive.setGrip(false);
-               _drive.updatePoseEstimate();
+   //     _drive.followTrajectorySequence(toMED2);
+   //     _drive.setGrip(false);
+   //            _drive.updatePoseEstimate();
        /* TrajectorySequence tostack4 = _drive.trajectorySequenceBuilder(medjun2)
                 .lineToLinearHeading(stackPose,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed,
@@ -327,7 +327,7 @@ public class Revamp extends LinearOpMode {
                 )
                 .build();
                        _drive.updatePoseEstimate();
-                       */
+
         _drive.followTrajectorySequence(tostack4);
         _drive.setHeight(1050-(h*150));
         _drive.setGrip(false);
@@ -362,3 +362,4 @@ public class Revamp extends LinearOpMode {
     }
 
 }
+*/

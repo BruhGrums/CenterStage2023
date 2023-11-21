@@ -31,6 +31,7 @@ public class Controller {
         Analog values are read directly to their respective variables
      */
     public void update() {
+
         if (gamepad.square) {
             ++square;   // if pressed, increment variable
         } else {
@@ -97,7 +98,7 @@ public class Controller {
         If a button's variable is 0, its function will evaluate to false
         These functions are good for querying buttons that will be held for a period of time
      */
-    public boolean dpadUp() {
+    public  boolean dpadUp() {
         return 0 < dpad_up;
     }
 

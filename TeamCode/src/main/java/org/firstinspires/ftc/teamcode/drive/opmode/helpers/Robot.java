@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.drive.opmode.helpers;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Hardware definitions and access for a robot with a four-motor
  * drive train and a gyro sensor.
  */
+
 public class Robot {
 
     // Create a HardwareMap object to communicate with the Rev Control Hub
@@ -31,7 +34,7 @@ public class Robot {
     private final DcMotor slideLeft, slideRight, slideTop;
 
     // Create IMU object
-    private final BNO055IMU imu;
+    private final IMU imu;
 
     // Create servo objects
     private final Servo leftGripServo, rightGripServo;
@@ -60,8 +63,16 @@ public class Robot {
         // Set up gyro
 
         // Ask the Driver Hub for our IMU
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu");
         // Create a parameters object so we can customize our IMU setup
+        imu.initialize(
+                new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)
+                )
+        );
+
+        /*
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         // Set our units
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -74,12 +85,13 @@ public class Robot {
         // Tell the imu that we don't need it to integrate velocity and position from acceleration
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         // Initialize our IMU using the parameters we just set
-        imu.initialize(parameters);
+        */
+
 
         // Ask the Driver Hub which port each slide motor is attached to based on robot config
         slideLeft = hardwareMap.dcMotor.get("slideLeft");
         slideRight = hardwareMap.dcMotor.get("slideRight");
-        slideTop = hardwareMap.dcMotor.get("slideTop");
+        slideTop = hardwareMap.dcMotor.get("intakeMotor");
 
         // Reverse one slide motor. This must be done since we are using a mirrored Viper slide and
         // the motors will fight if one is not reversed
@@ -145,14 +157,17 @@ public class Robot {
 
     // Public Boolean wrapper to allow outside functions to access gyro calibration state
     public boolean isGyroCalibrated() {
-        return imu.isGyroCalibrated();
+        return true;
     }
 
     // This function refreshes gyro values when called by an opmode
     // These are computationally expensive tasks so don't call this function extra times for fun
+
     public void loop() {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,AngleUnit.RADIANS);
-        gravity = imu.getGravity();
+        angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+    //    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,AngleUnit.RADIANS);
+         //   gravity
+        // gravity = imu.getGravity();
     }
 
     // This function returns the raw heading angle of the IMU
@@ -165,6 +180,7 @@ public class Robot {
         It subtracts the headingOffset from the raw heading
         To prevent heading outputs of greater than 360° we mod the output by 2pi
      */
+
     public double getHeading() {
         return (getRawHeading() - headingOffset) % (2.0 * Math.PI);
     }
@@ -205,6 +221,7 @@ public class Robot {
      */
     // Basically, if for whatever reason we request more than 100% speed from a motor, this function
     // automatically reduces the power of all the motors proportionally
+
     public void setMotors(double _leftFront, double _leftRear, double _rightFront, double _rightRear, double multiplier) {
         final double scale = maxAbs(1.0, _leftFront, _leftRear, _rightFront, _rightRear);
         leftFront.setPower((_leftFront * multiplier) / scale);
@@ -216,7 +233,7 @@ public class Robot {
     // Provide a convenient way to set all the slide motors from a single function
     public void setSlideMotors(double _slideLeft, double _slideRight, double _slideTop) {
         slideLeft.setPower(_slideLeft);
-        slideRight.setPower(_slideRight);
+       slideRight.setPower(_slideRight);
         slideTop.setPower(_slideTop);
     }
 
@@ -226,13 +243,13 @@ public class Robot {
         double leftOpen = 0.0, leftClosed = 105.0;
         double rightOpen = 270.0, rightClosed = 175.0;
 
-        /*
-            Dividing by 270 is required to properly set the Servo positions
+
+         /*   Dividing by 270 is required to properly set the Servo positions
             The servos require a value from 0 to 1 to set their position,
             and our particular servos have a range of 270°
             Dividing by 270 converts our degrees to a value from 0 to 1
          */
-        if (grip) {
+       if (grip) {
             leftGripServo.setPosition(leftClosed / 270);
             rightGripServo.setPosition(rightClosed / 270);
         } else if (!grip) {
